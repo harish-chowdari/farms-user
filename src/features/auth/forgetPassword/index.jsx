@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import axios from "../axios";
-import SecondaryLoader from "../components/SecondaryLoader";
-import ROUTES from "../navigations/routes";
+import axios from "../../../services/axios";
+import SecondaryLoader from "../../../components/loaders/SecondaryLoader";
+import ROUTES from "../../../navigations/routes";
 
 const PasswordReset = () => {
   const [login, setLogin] = useState({ email: "", otp: "", newPassword: "" });
