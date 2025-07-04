@@ -1,16 +1,16 @@
 import { FaCalendarAlt, FaListAlt } from 'react-icons/fa'
-const userId = localStorage.getItem('userId')
+const adminId = localStorage.getItem('adminId')
 
 const navItems = [
     {
         label: 'Sidebar1',
         icon: FaCalendarAlt,
-        path: `/home/${userId}/appointment-form`
+        path: `/home/${adminId}/appointment-form`
     },
     {
         label: 'Sidebar2',
         icon: FaListAlt,
-        path: `/home/${userId}/view-appointments`
+        path: `/home/${adminId}/view-appointments`
     }
 ]
 

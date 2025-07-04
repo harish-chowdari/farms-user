@@ -1,44 +1,45 @@
 import React, { useState } from "react";
-import axios from "../axios";
 import { Link, useNavigate } from "react-router-dom";
+
+import axios from "../axios";
 import SecondaryLoader from "../components/SecondaryLoader";
 import ROUTES from "../navigations/routes";
 
 const Signup = () => {
-    const [signup, setSignup] = useState({
-        name: "",
-        email: "",
-        password: "",
-    });
-    const [errorMessage, setErrorMessage] = useState("");
-    const navigate = useNavigate();
+  const [signup, setSignup] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
-    const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-    const handleChange = (e) => {
-        setSignup({ ...signup, [e.target.name]: e.target.value });
-    };
+  const handleChange = (e) => {
+    setSignup({ ...signup, [e.target.name]: e.target.value });
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setErrorMessage("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMessage("");
 
-        try {
-            setIsLoading(true);
-            const res = await axios.post("/user-signup", { ...signup });
-            const userId = res.data._id;
-            localStorage.setItem("userId", userId);
-            navigate(`/home/${userId}`);
-        } catch (error) {
-            console.log(error);
-            setErrorMessage( error?.response?.data?.error || "An error occurred while signing up. Please try again.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    try {
+        setIsLoading(true);
+        const res = await axios.post("/admin-signup", { ...signup });
+        const adminId = res.data._id;
+        localStorage.setItem("adminId", adminId);
+        navigate(`/home/${adminId}`);
+    } catch (error) {
+      console.log(error);
+      setErrorMessage( error?.response?.data?.error || "An error occurred while signing up. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    return (
-        <div className="min-h-screen flex">
+  return (
+    <div className="min-h-screen flex">
         {/* Left side image (hidden on small screens) */}
         <div className="hidden md:flex md:w-1/2">
             {/* <img
@@ -96,17 +97,17 @@ const Signup = () => {
                 {isLoading ? "" : "Signup"}{" "}
                 <SecondaryLoader isLoading={isLoading} />
             </button>
- 
+
             <p className="mt-4 text-center text-green-700">
                 Already have an account?{" "}
                 <Link to={ROUTES.LOGIN} className="text-green-600 hover:underline">
-                    Login
+                Login
                 </Link>
             </p>
             </form>
         </div>
         </div>
-    );
+  );
 };
 
 export default Signup;
