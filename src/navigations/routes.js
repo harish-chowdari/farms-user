@@ -8,20 +8,14 @@ const ROUTES = {
     HOME: '/',
 
     // PRODUCT
-    ADD_PRODUCT: '/product-management/add-product',
-    VIEW_PRODUCTS: '/product-management/view-products',
-    EDIT_PRODUCT: '/product-management/edit-product/:id',
-    PRODUCT_DETAILS: '/product-management/product-details/:productId',
+    PRODUCT_DETAILS: '/product-details/:productId',
+    VIEW_ALL_PRODUCTS: '/products',
 
-    // CUSTOMER
-    CUSTOMERS: '/customer-management/customers',
-    CUSTOMER_VIEW_PROFILE: '/customer-management/view-profile/:customerId',
-
-    // INVENTORY
-    INVENTORY_MANAGEMENT: '/inventory-management',
-
-    // DASHBOARD
-    DASHBOARD: '/dashboard'
+    // CART
+    CART: '/cart',
+    CHECKOUT: '/checkout',
+    WISHLIST: '/wishlist',
+    PROFILE: '/profile',
 }
 
 export default ROUTES
