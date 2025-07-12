@@ -11,7 +11,7 @@ const Unauthorized = () => {
                 <h1 className='w-full text-[6vh]'>UNAUTHORIZED TO ACCESS</h1>
                 <p className='w-full text-3xl'>Please get authorized to access this page</p>
                 <div className='w-full my-3'>
-                    <button onClick={() => window.location.href = '/'} className='p-1 px-2 border-2 border-[#50AFF8] text-[#50AFF8] rounded-full text-3xl '>
+                    <button className='p-1 px-2 border-2 border-[#50AFF8] text-[#50AFF8] rounded-full text-3xl '>
                         Back to Home
                     </button>
                 </div>

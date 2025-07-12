@@ -7,6 +7,7 @@ import axios from "../../../services/axios"
 import SecondaryLoader from "../../../components/loaders/SecondaryLoader"
 import ROUTES from "../../../navigations/routes"
 import Input from "../../../components/fields/Input"
+import PrimaryLoader from "../../../components/loaders/PrimaryLoader"
 
 const Login = () => {
     const navigate = useNavigate()
@@ -40,7 +41,7 @@ const Login = () => {
 
     return (
         <div className="min-h-screen flex">
-            {/* Left side image (hidden on small screens) */}
+            <PrimaryLoader isLoading={isLoading} />
             <div className="hidden md:flex md:w-1/2">
                 {/* <img
                     src="https://img.freepik.com/free-photo/doctor-with-stethoscope-hands-hospital-background_1423-1.jpg?semt=ais_hybrid"

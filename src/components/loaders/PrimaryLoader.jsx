@@ -5,36 +5,58 @@ export default function PrimaryLoader({ isLoading = true, message = "Loading..."
     if (!isLoading) return null;
 
     return (
-        <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="text-center">
-                {/* Professional Loader */}
-                <div className="relative w-16 h-16 mx-auto mb-4">
-                    {/* Outer ring */}
-                    <div className="absolute inset-0 border-4 border-blue-100/20 rounded-full"></div>
-                    <div className="absolute inset-0 border-4 border-transparent border-t-blue-500 rounded-full animate-spin"></div>
-                    
-                    {/* Inner ring */}
-                    <div className="absolute inset-2 border-2 border-transparent border-t-emerald-400 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
-                    
-                    {/* Center dot */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                        {/* <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div> */}
-                    </div>
-                </div>
-
-                {/* Loading Text */}
-                <div className="space-y-2">
-                    {/* <h3 className="text-lg font-semibold text-white">Admin</h3> */}
-                    <p className="text-blue-200 text-sm">{message}</p>
-                    
-                    {/* Progress dots */}
-                    <div className="flex justify-center space-x-1 mt-3">
-                        <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce"></div>
-                        <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                        <div className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                    </div>
-                </div>
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-green-50 to-green-100">
+            <div className="text-lg font-bold text-green-700 mb-8">
+                🌾 Sunotal Farms
             </div>
+
+            {/* Main loader */}
+            <div className="relative w-16 h-16 mb-6">
+                <div 
+                    className="w-full h-full border-4 border-green-200 border-t-green-600 rounded-full"
+                    style={{ animation: 'spin 1s linear infinite' }}
+                ></div>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-lg">🥕</div>
+            </div>
+
+            {/* Loading text */}
+            <div className="text-green-700 font-medium mb-4">
+                {message}
+            </div>
+
+            {/* Animated dots */}
+            <div className="flex space-x-1">
+                <div 
+                    className="w-2 h-2 bg-green-600 rounded-full"
+                    style={{ animation: 'bounce 1.4s ease-in-out infinite' }}
+                ></div>
+                <div 
+                    className="w-2 h-2 bg-green-600 rounded-full"
+                    style={{ animation: 'bounce 1.4s ease-in-out infinite 0.2s' }}
+                ></div>
+                <div 
+                    className="w-2 h-2 bg-green-600 rounded-full"
+                    style={{ animation: 'bounce 1.4s ease-in-out infinite 0.4s' }}
+                ></div>
+            </div>
+
+            <style jsx>{`
+                @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+                }
+
+                @keyframes bounce {
+                0%, 80%, 100% { 
+                    transform: scale(0); 
+                    opacity: 0.5;
+                }
+                40% { 
+                    transform: scale(1); 
+                    opacity: 1;
+                }
+                }
+            `}</style>
         </div>
-    );
+  );
 }

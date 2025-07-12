@@ -30,7 +30,7 @@ const PersistLogin = () => {
             try {
                 await refresh();
             } catch (error) {
-                if(!authRoutes.flatMap(obj => obj.path).includes(window.location.pathname)) 
+                // if(!authRoutes.flatMap(obj => obj.path).includes(window.location.pathname)) 
                 
                 navigate(ROUTES.LOGIN);
             }
