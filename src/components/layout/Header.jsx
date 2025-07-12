@@ -25,7 +25,7 @@ const Header = () => {
                         </div>
                         <div className="flex items-center space-x-1">
                             <MapPin className="w-4 h-4" />
-                            <span>Free delivery in Bangalore</span>
+                            <span>Free delivery in Vijayawada</span>
                         </div>
                     </div>
                     <div className="hidden md:block">
@@ -61,7 +61,7 @@ const Header = () => {
                     {/* Desktop Action Buttons */}
                     <div className="hidden md:flex items-center space-x-4">
                         {/* Notifications */}
-                        <button className="relative p-2 text-gray-700 hover:text-green-600">
+                        <button className="relative p-2 cursor-pointer text-gray-700 hover:text-green-600">
                             <Bell className="h-6 w-6" />
                             <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                                 2
@@ -69,7 +69,7 @@ const Header = () => {
                         </button>
 
                         {/* Cart */}
-                        <button onClick={() => navigate('/cart')} className="relative p-2 text-gray-700 hover:text-green-600">
+                        <button onClick={() => navigate('/cart')} className="relative p-2 cursor-pointer text-gray-700 hover:text-green-600">
                             <ShoppingCart className="h-6 w-6" />
                             {cartCount > 0 && (
                                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
@@ -82,7 +82,7 @@ const Header = () => {
                         <div className="relative">
                             <button
                                 onClick={toggleProfile}
-                                className="flex items-center space-x-1 p-2 text-gray-700 hover:text-green-600"
+                                className="flex items-center space-x-1 cursor-pointer p-2 text-gray-700 hover:text-green-600"
                             >
                                 <User className="h-6 w-6" />
                                 <span className="text-sm">John Doe</span>
@@ -137,7 +137,7 @@ const Header = () => {
                 <div className="md:hidden bg-white border-t border-gray-200">
                     <div className="px-4 py-2">
                         {/* User Info */}
-                        <div className="flex items-center space-x-3 py-3 border-b border-gray-200">
+                        <div className="flex cursor-pointer items-center space-x-3 py-3 border-b border-gray-200">
                             <div className="bg-green-100 p-2 rounded-full">
                                 <User className="h-5 w-5 text-green-600" />
                             </div>
@@ -149,7 +149,7 @@ const Header = () => {
 
                         {/* Action Buttons */}
                         <div className="py-3 border-t border-gray-200 space-y-2">
-                            <button className="flex items-center justify-between w-full py-2 text-gray-700 hover:text-green-600">
+                            <button className="flex cursor-pointer items-center justify-between w-full py-2 text-gray-700 hover:text-green-600">
                                 <span className="flex items-center space-x-2">
                                     <Bell className="h-5 w-5" />
                                     <span>Notifications</span>
@@ -157,7 +157,7 @@ const Header = () => {
                                 <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">2</span>
                             </button>
                             
-                            <button className="flex items-center justify-between w-full py-2 text-gray-700 hover:text-green-600">
+                            <button className="flex cursor-pointer items-center justify-between w-full py-2 text-gray-700 hover:text-green-600">
                                 <span className="flex items-center space-x-2">
                                     <ShoppingCart className="h-5 w-5" />
                                     <span>Cart</span>

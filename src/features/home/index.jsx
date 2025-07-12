@@ -101,22 +101,22 @@ const SunotalHomePage = () => {
 
     const testimonials = [
         {
-        name: "Priya Mehta",
-        location: "Bangalore",
+        name: "Priya",
+        location: "Vijayawada",
         rating: 5,
         comment: "Amazing quality fruits and vegetables! Always fresh and delivered on time.",
         image: "👩"
         },
         {
-        name: "Rohit Singh",
-        location: "Mumbai",
+        name: "Rohit",
+        location: "Guntur",
         rating: 5,
         comment: "Best online grocery platform. Love the farmer stories and organic produce.",
         image: "👨"
         },
         {
-        name: "Anita Sharma",
-        location: "Delhi",
+        name: "Anita",
+        location: "Vijayawada",
         rating: 4,
         comment: "Great variety and excellent customer service. Highly recommended!",
         image: "👩"
