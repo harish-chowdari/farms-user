@@ -112,38 +112,6 @@ const SunotalHomePage = () => {
     return (
         <div className="min-h-screen bg-gray-50">
             <Header />
-            <section className="relative h-96 md:h-[500px] overflow-hidden">
-                <div className="absolute inset-0 transition-all duration-1000 ease-in-out">
-                    <div className={`${heroSlides[currentSlide].bg} h-full flex items-center justify-center text-white`}>
-                        <div className="max-w-4xl mx-auto px-4 text-center">
-                            <div className="text-6xl md:text-8xl mb-4">{heroSlides[currentSlide].image}</div>
-                            <h1 className="text-4xl md:text-6xl font-bold mb-4">{heroSlides[currentSlide].title}</h1>
-                            <p className="text-xl md:text-2xl mb-8">{heroSlides[currentSlide].subtitle}</p>
-                            <button className="bg-white text-green-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-                                {heroSlides[currentSlide].cta}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <button onClick={prevSlide} className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 p-2 rounded-full">
-                    <ChevronLeft className="h-6 w-6 text-white" />
-                </button>
-                <button onClick={nextSlide} className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 p-2 rounded-full">
-                    <ChevronRight className="h-6 w-6 text-white" />
-                </button>
-
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                    {heroSlides.map((_, index) => (
-                        <button
-                        key={index}
-                        onClick={() => setCurrentSlide(index)}
-                        className={`w-3 h-3 rounded-full ${currentSlide === index ? 'bg-white' : 'bg-white/50'}`}
-                        />
-                    ))}
-                </div>
-            </section>
-
             <section className="py-12 bg-white">
                 <div className="max-w-7xl mx-auto px-4">
                     <div className="grid md:grid-cols-4 gap-8">
