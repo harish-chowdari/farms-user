@@ -4,16 +4,24 @@ import Header from '../../components/layout/Header';
 import Footer from '../../components/layout/Footer';
 import { useNavigate } from 'react-router-dom';
 import NewsLetter from '../../components/layout/NewsLetter';
+import { categories } from './utils/options';
+import { getAllProducts } from '../../services/api';
+import ProductCard from '../../components/featureComponents/ProductCard';
 
 const SunotalHomePage = () => {
     
+    const navigate = useNavigate();
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [cartCount] = useState(3);
     const [wishlistCount] = useState(5);
     const [currentSlide, setCurrentSlide] = useState(0);
 
-    const navigate = useNavigate();
+    const [products, setProducts] = useState([]);
+
+    const [isLoading, setIsLoading] = useState(false);
+
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
     const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
@@ -43,61 +51,23 @@ const SunotalHomePage = () => {
         }
     ];
 
-    const categories = [
-        { name: "Fresh Fruits", icon: "🍎", count: "50+ Items", color: "bg-red-50 hover:bg-red-100" },
-        { name: "Vegetables", icon: "🥕", count: "80+ Items", color: "bg-orange-50 hover:bg-orange-100" },
-        { name: "Dairy Products", icon: "🥛", count: "30+ Items", color: "bg-blue-50 hover:bg-blue-100" },
-        { name: "Organic", icon: "🌱", count: "40+ Items", color: "bg-green-50 hover:bg-green-100" },
-        { name: "Herbs & Spices", icon: "🌿", count: "25+ Items", color: "bg-emerald-50 hover:bg-emerald-100" },
-        { name: "Grains & Pulses", icon: "🌾", count: "35+ Items", color: "bg-yellow-50 hover:bg-yellow-100" }
-    ];
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                setIsLoading(true);
+                const response = await getAllProducts();
+                console.log(response?.data);
+                setProducts(response?.data);
+            } catch (error) {
+                // console.error('Error fetching products:', error);
+                // Handle the error, e.g., show an error message
+            } finally {
+                setIsLoading(false);
+            }
+        } 
 
-    const featuredProducts = [
-        {
-        id: 1,
-        name: "Organic Apples",
-        price: "₹120/kg",
-        originalPrice: "₹150/kg",
-        image: "🍎",
-        farmer: "Rajesh Kumar",
-        rating: 4.8,
-        reviews: 124,
-        tag: "Fresh"
-        },
-        {
-        id: 2,
-        name: "Farm Fresh Tomatoes",
-        price: "₹40/kg",
-        originalPrice: "₹50/kg",
-        image: "🍅",
-        farmer: "Priya Sharma",
-        rating: 4.9,
-        reviews: 98,
-        tag: "Local"
-        },
-        {
-        id: 3,
-        name: "Pure Milk",
-        price: "₹60/L",
-        originalPrice: "₹70/L",
-        image: "🥛",
-        farmer: "Green Valley Dairy",
-        rating: 4.7,
-        reviews: 156,
-        tag: "Premium"
-        },
-        {
-        id: 4,
-        name: "Organic Spinach",
-        price: "₹30/bunch",
-        originalPrice: "₹40/bunch",
-        image: "🥬",
-        farmer: "Amit Patel",
-        rating: 4.6,
-        reviews: 87,
-        tag: "Organic"
-        }
-    ];
+        fetchProducts();
+    },[])
 
     const testimonials = [
         {
@@ -213,9 +183,9 @@ const SunotalHomePage = () => {
                 <div className="max-w-7xl mx-auto px-4">
                     <h2 className="text-3xl font-bold text-center mb-12">Shop by Category</h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-                        {categories.map((category, index) => (
+                        {categories?.map((category, index) => (
                         <div key={index} className={`${category.color} p-6 rounded-lg text-center cursor-pointer transition-all hover:scale-105`}>
-                            <div className="text-4xl mb-3">{category.icon}</div>
+                            <img src={category.img} alt={category.name} className="w-28 h-28 mx-auto mb-4" />
                             <h3 className="font-semibold text-lg mb-1">{category.name}</h3>
                             <p className="text-sm text-gray-600">{category.count}</p>
                         </div>
@@ -227,48 +197,16 @@ const SunotalHomePage = () => {
             {/* Featured Products */}
             <section className="py-16 bg-white">
                 <div className="max-w-7xl mx-auto px-4">
-                    <div className="flex justify-between items-center mb-12">
-                        <h2 className="text-3xl font-bold">Featured Products</h2>
-                        <button onClick={() => navigate('/products')} className="text-green-600 cursor-pointer hover:text-green-700 font-medium flex items-center">
+                    <div className="flex justify-between items-center md:mb-6 mb-4">
+                        <h2 className="md:text-3xl text-base font-bold text-nowrap">Featured Products</h2>
+                        <button onClick={() => navigate('/products')} className="text-green-600 text-nowrap cursor-pointer hover:text-green-700 font-medium flex items-center">
                             View All <ArrowRight className="ml-1 h-4 w-4" />
                         </button>
                     </div>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {featuredProducts.map((product) => (
-                        <div onClick={() => navigate(`/product-details/${product.id}`)} key={product.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
-                            <div className="relative">
-                                <div className="h-48 bg-gray-100 flex items-center justify-center text-6xl">
-                                    {product.image}
-                                </div>
-                                <span className="absolute top-2 left-2 bg-green-500 text-white px-2 py-1 rounded text-xs">
-                                    {product.tag}
-                                </span>
-                                <button className="absolute top-2 right-2 bg-white p-2 rounded-full hover:bg-gray-100">
-                                    <Heart className="h-4 w-4" />
-                                </button>
-                            </div>
-                            <div className="p-4">
-                                <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
-                                <p className="text-sm text-gray-600 mb-2">by {product.farmer}</p>
-                                <div className="flex items-center mb-2">
-                                    <div className="flex items-center">
-                                        <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                                        <span className="ml-1 text-sm">{product.rating}</span>
-                                    </div>
-                                    <span className="text-sm text-gray-500 ml-2">({product.reviews} reviews)</span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <span className="text-lg font-bold text-green-600">{product.price}</span>
-                                        <span className="text-sm text-gray-500 line-through ml-2">{product.originalPrice}</span>
-                                    </div>
-                                    <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-                                        Add
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 md:gap-6 gap-3">
+                        {products?.slice(0, 12).map((product) => (
+                            <ProductCard key={product.id} product={product} />
                         ))}
                     </div>
                 </div>
