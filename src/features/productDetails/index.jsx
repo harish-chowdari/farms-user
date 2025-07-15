@@ -32,12 +32,15 @@ const ProductDetailsPage = () => {
 
                 const cartRes = await getCartByUserId(userId);
                 const cartItems = cartRes || [];
-                console.log(cartItems);
-                const cartItem = cartItems?.find(item => item.productId === productId);
+                console.log('Cart items:', cartItems);
+                
+                // Updated to handle the new cart structure
+                const cartItem = cartItems?.find(item => item.product._id === productId);
                 if (cartItem) {
-                    setQuantity(cartItem?.quantity);
+                    setQuantity(cartItem.quantity);
                     setIsInCart(true);
                 } else {
+                    setQuantity(1);
                     setIsInCart(false);
                 }
             } catch (error) {
@@ -53,7 +56,7 @@ const ProductDetailsPage = () => {
     const handleAddToCart = async() => {
         try {
             setIsLoading(true);
-            const res = await addProductToCart( userId, quantity, product?._id);
+            const res = await addProductToCart(userId, quantity, product?._id);
             setIsInCart(true);
             setShowAddedToCart(true);
             setTimeout(() => {
@@ -291,7 +294,8 @@ const ProductDetailsPage = () => {
                                 </div>
 
                                 <div className="space-y-4">
-                                    { isInCart && (
+                                    {/* Show quantity selector only if item is in cart */}
+                                    {isInCart && (
                                         <div className="flex items-center justify-between">
                                             <span className="font-medium text-gray-900">Quantity</span>
                                             <div className="flex items-center">
@@ -305,6 +309,30 @@ const ProductDetailsPage = () => {
                                                 <span className="mx-4 text-lg font-semibold min-w-[2rem] text-center">{quantity}</span>
                                                 <button
                                                     onClick={() => handleQuantityChange(CART_ACTIONS.INCREMENT)}
+                                                    className="w-10 h-10 rounded-lg cursor-pointer border border-gray-300 flex items-center justify-center hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                                    disabled={quantity >= product?.quantity}
+                                                >
+                                                    <Plus className="h-4 w-4" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Show quantity selector when not in cart */}
+                                    {!isInCart && (
+                                        <div className="flex items-center justify-between">
+                                            <span className="font-medium text-gray-900">Quantity</span>
+                                            <div className="flex items-center">
+                                                <button
+                                                    onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
+                                                    className="w-10 h-10 rounded-lg cursor-pointer border border-gray-300 flex items-center justify-center hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                                    disabled={quantity <= 1}
+                                                >
+                                                    <Minus className="h-4 w-4" />
+                                                </button>
+                                                <span className="mx-4 text-lg font-semibold min-w-[2rem] text-center">{quantity}</span>
+                                                <button
+                                                    onClick={() => setQuantity(prev => Math.min(product?.quantity || 1, prev + 1))}
                                                     className="w-10 h-10 rounded-lg cursor-pointer border border-gray-300 flex items-center justify-center hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                                     disabled={quantity >= product?.quantity}
                                                 >

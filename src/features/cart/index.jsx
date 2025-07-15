@@ -1,66 +1,123 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Minus, Plus, Trash2, ShoppingCart, ArrowLeft, Truck, Shield, Clock, Tag, CreditCard, MapPin, User, Phone, Mail } from 'lucide-react';
 import Header from '../../components/layout/Header';
+import { decreaseQuantity, getCartByUserId, increaseQuantity, removeProductFromCart } from '../../services/api';
+import PrimaryLoader from '../../components/loaders/PrimaryLoader';
+import { CART_ACTIONS } from '../../config/constants';
 
 export default function index() {
-  const [cartItems, setCartItems] = useState([
-        {
-            id: 1,
-            name: "Organic Apples",
-            price: 120,
-            originalPrice: 150,
-            image: "🍎",
-            farmer: "Rajesh Kumar",
-            quantity: 2,
-            unit: "kg",
-            category: "Fresh Fruits"
-        },
-        {
-            id: 2,
-            name: "Farm Fresh Tomatoes",
-            price: 40,
-            originalPrice: 50,
-            image: "🍅",
-            farmer: "Priya Sharma",
-            quantity: 1,
-            unit: "kg",
-            category: "Vegetables"
-        },
-        {
-            id: 3,
-            name: "Pure Milk",
-            price: 60,
-            originalPrice: 70,
-            image: "🥛",
-            farmer: "Green Valley Dairy",
-            quantity: 3,
-            unit: "L",
-            category: "Dairy"
-        }
-    ]);
+    const userId = '686fbc3fddb3fa12336d0a16';
 
+    const [cartItems, setCartItems] = useState([]);
     const [promoCode, setPromoCode] = useState('');
     const [isPromoApplied, setIsPromoApplied] = useState(false);
     const [showCheckout, setShowCheckout] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const updateQuantity = (id, newQuantity) => {
-        if (newQuantity === 0) {
-            removeItem(id);
-        } else {
-            setCartItems(cartItems.map(item =>
-                item.id === id ? { ...item, quantity: newQuantity } : item
-            ));
+    useEffect(() => {
+        const fetchCart = async () => {
+            try {
+                setIsLoading(true);
+                const res = await getCartByUserId(userId);
+                
+                const transformedCartItems = res.map(item => ({
+                    id: item.product._id,
+                    name: item.product.productName,
+                    price: item.product.discountPrice,
+                    originalPrice: item.product.price,
+                    quantity: item.quantity,
+                    image: item.product.productImage[0] || '🥕',
+                    category: item.product.category,
+                    farmer: item.product.brand || item.product.origin,
+                    unit: item.product.weightUnit,
+                    weight: item.product.weight,
+                    freshness: item.product.freshness,
+                    expiryDate: item.product.expiryDate
+                }));
+                
+                setCartItems(transformedCartItems);
+            } catch (error) {
+                console.error('Error fetching cart:', error);
+                setCartItems([]);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchCart();
+    }, []);
+
+    const handleRemoveFromCart = async (productId) => {
+        try {
+            setIsLoading(true);
+            await removeProductFromCart(userId, productId);
+            
+            // Update local state
+            setCartItems(prevItems => prevItems.filter(item => item.id !== productId));
+            
+            // Optional: Show success message
+            console.log('Product removed from cart successfully');
+        } catch (error) {
+            console.error('Error removing product from cart:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    const removeItem = (id) => {
-        setCartItems(cartItems.filter(item => item.id !== id));
+    const handleQuantityChange = async (productId, action) => {
+        try {
+            setIsLoading(true);
+            
+            if (action === CART_ACTIONS.INCREMENT) {
+                await increaseQuantity(userId, productId);
+                setCartItems(prevItems => 
+                    prevItems.map(item => 
+                        item.id === productId 
+                            ? { ...item, quantity: item.quantity + 1 }
+                            : item
+                    )
+                );
+            } else if (action === CART_ACTIONS.DECREMENT) {
+                const currentItem = cartItems.find(item => item.id === productId);
+                if (currentItem && currentItem.quantity > 1) {
+                    await decreaseQuantity(userId, productId);
+                    setCartItems(prevItems => 
+                        prevItems.map(item => 
+                            item.id === productId 
+                                ? { ...item, quantity: item.quantity - 1 }
+                                : item
+                        )
+                    );
+                }
+            }
+        } catch (error) {
+            console.error('Error updating quantity:', error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const applyPromoCode = () => {
         if (promoCode.toLowerCase() === 'fresh10') {
             setIsPromoApplied(true);
         }
+    };
+
+    // Helper function to update quantity (for the UI buttons)
+    const updateQuantity = (productId, newQuantity) => {
+        const currentItem = cartItems.find(item => item.id === productId);
+        if (!currentItem) return;
+
+        if (newQuantity > currentItem.quantity) {
+            handleQuantityChange(productId, CART_ACTIONS.INCREMENT);
+        } else if (newQuantity < currentItem.quantity && newQuantity > 0) {
+            handleQuantityChange(productId, CART_ACTIONS.DECREMENT);
+        }
+    };
+
+    // Helper function to remove item (for the UI button)
+    const removeItem = (productId) => {
+        handleRemoveFromCart(productId);
     };
 
     const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -74,8 +131,20 @@ export default function index() {
         return (
             <div className="min-h-screen bg-gray-50">
                 <Header />
+                <PrimaryLoader isLoading={isLoading} />
 
                 <div className="max-w-4xl mx-auto px-4 py-8">
+                    <div className="flex items-center mb-6">
+                        <button 
+                            onClick={() => setShowCheckout(false)}
+                            className="flex items-center text-gray-600 hover:text-gray-800 mr-4"
+                        >
+                            <ArrowLeft className="h-4 w-4 mr-2" />
+                            Back to Cart
+                        </button>
+                        <h1 className="text-2xl font-bold">Checkout</h1>
+                    </div>
+
                     <div className="grid md:grid-cols-2 gap-8">
                         {/* Checkout Form */}
                         <div className="bg-white p-6 rounded-lg shadow-md">
@@ -155,10 +224,19 @@ export default function index() {
                                 {cartItems.map((item) => (
                                     <div key={item.id} className="flex justify-between items-center">
                                         <div className="flex items-center">
-                                            <span className="text-2xl mr-3">{item.image}</span>
+                                            <img 
+                                                src={item.image} 
+                                                alt={item.name}
+                                                className="w-8 h-8 rounded object-cover mr-3"
+                                                onError={(e) => {
+                                                    e.target.style.display = 'none';
+                                                    e.target.nextSibling.style.display = 'block';
+                                                }}
+                                            />
+                                            <span className="text-2xl mr-3" style={{display: 'none'}}>🥕</span>
                                             <div>
                                                 <div className="font-medium">{item.name}</div>
-                                                <div className="text-sm text-gray-600">{item.quantity} {item.unit}</div>
+                                                <div className="text-sm text-gray-600">{item.quantity} × {item.weight}{item.unit}</div>
                                             </div>
                                         </div>
                                         <div className="text-right">
@@ -207,6 +285,7 @@ export default function index() {
     return (
         <div className="min-h-screen bg-gray-50">
             <Header />
+            <PrimaryLoader isLoading={isLoading} />
 
             {cartItems.length === 0 ? (
                 <div className="max-w-4xl mx-auto px-4 py-16 text-center">
@@ -219,6 +298,8 @@ export default function index() {
                 </div>
             ) : (
                 <div className="max-w-4xl mx-auto px-4 py-8">
+                    <h1 className="text-2xl font-bold mb-6">Shopping Cart</h1>
+                    
                     <div className="grid md:grid-cols-3 gap-8">
                         {/* Cart Items */}
                         <div className="md:col-span-2">
@@ -228,14 +309,26 @@ export default function index() {
                                 <div className="space-y-6">
                                     {cartItems.map((item) => (
                                         <div key={item.id} className="flex items-center border-b pb-6 last:border-b-0">
-                                            <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center text-3xl mr-4">
-                                                {item.image}
+                                            <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
+                                                <img 
+                                                    src={item.image} 
+                                                    alt={item.name}
+                                                    className="w-full h-full object-cover rounded-lg"
+                                                    onError={(e) => {
+                                                        e.target.style.display = 'none';
+                                                        e.target.nextSibling.style.display = 'flex';
+                                                    }}
+                                                />
+                                                <div className="text-3xl hidden items-center justify-center w-full h-full">
+                                                    🥕
+                                                </div>
                                             </div>
                                             
                                             <div className="flex-1">
                                                 <h3 className="font-semibold text-lg">{item.name}</h3>
                                                 <p className="text-gray-600 text-sm">by {item.farmer}</p>
                                                 <p className="text-green-600 text-sm">{item.category}</p>
+                                                <p className="text-gray-500 text-sm">{item.weight}{item.unit} • {item.freshness}</p>
                                                 <div className="flex items-center mt-2">
                                                     <span className="text-lg font-bold text-green-600">₹{item.price}/{item.unit}</span>
                                                     <span className="text-sm text-gray-500 line-through ml-2">₹{item.originalPrice}</span>
@@ -247,6 +340,7 @@ export default function index() {
                                                     <button 
                                                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
                                                         className="p-2 hover:bg-gray-100 rounded-l-lg"
+                                                        disabled={item.quantity <= 1}
                                                     >
                                                         <Minus className="h-4 w-4" />
                                                     </button>
