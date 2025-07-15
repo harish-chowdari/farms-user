@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Search, ShoppingCart, User, Menu, X, MapPin, Phone, Bell } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+import {logo} from '../../assets/index';
+
+
 const Header = () => {
 
     const navigate = useNavigate();
@@ -40,8 +43,9 @@ const Header = () => {
                     {/* Logo */}
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
-                            <div onClick={() => navigate('/')} className="text-2xl cursor-pointer font-bold text-green-600">
-                                🌾 Sunotal Farms
+                            <div onClick={() => navigate('/')} className="text-2xl flex gap-1 items-center cursor-pointer font-bold text-green-600">
+                                <img className='w-10 h-10' src={logo} /> 
+                                <p>Sunotal Farms</p>
                             </div>
                         </div>
                     </div>
