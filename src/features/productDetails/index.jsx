@@ -6,6 +6,8 @@ import Footer from '../../components/layout/Footer';
 import { getProduct } from './services/api';
 import { useParams } from 'react-router-dom';
 import PrimaryLoader from '../../components/loaders/PrimaryLoader';
+import { addProductToCart, decreaseQuantity, getCartByUserId, increaseQuantity, removeProductFromCart } from '../../services/api';
+import { CART_ACTIONS } from '../../config/constants';
 
 const ProductDetailsPage = () => {
     const { productId } = useParams();
@@ -14,8 +16,12 @@ const ProductDetailsPage = () => {
     const [activeTab, setActiveTab] = useState('description');
     const [isWishlisted, setIsWishlisted] = useState(false);
     const [showAddedToCart, setShowAddedToCart] = useState(false);
+    const [showRemovedFromCart, setShowRemovedFromCart] = useState(false);
     const [product, setProduct] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isInCart, setIsInCart] = useState(false);
+
+    const userId = '686fbc3fddb3fa12336d0a16'
 
     useEffect(() => {
         const getProductDetails = async () => {
@@ -23,6 +29,17 @@ const ProductDetailsPage = () => {
                 setIsLoading(true);
                 const response = await getProduct(productId);
                 setProduct(response);
+
+                const cartRes = await getCartByUserId(userId);
+                const cartItems = cartRes || [];
+                console.log(cartItems);
+                const cartItem = cartItems?.find(item => item.productId === productId);
+                if (cartItem) {
+                    setQuantity(cartItem?.quantity);
+                    setIsInCart(true);
+                } else {
+                    setIsInCart(false);
+                }
             } catch (error) {
                 console.error('Error fetching product details:', error);
             } finally {
@@ -33,18 +50,56 @@ const ProductDetailsPage = () => {
         getProductDetails();
     }, [productId])
 
-    const handleQuantityChange = (action) => {
-        if (action === 'increment') {
-            setQuantity(prev => prev + 1);
-        } else if (action === 'decrement' && quantity > 1) {
-            setQuantity(prev => prev - 1);
+    const handleAddToCart = async() => {
+        try {
+            setIsLoading(true);
+            const res = await addProductToCart( userId, quantity, product?._id);
+            setIsInCart(true);
+            setShowAddedToCart(true);
+            setTimeout(() => {
+                setShowAddedToCart(false);
+            }, 3000);
+        } catch (error) {
+            console.error('Error adding product to cart:', error);
+        } finally {
+            setIsLoading(false);
         }
-    };
+    }
 
-    const handleAddToCart = () => {
-        setShowAddedToCart(true);
-        setTimeout(() => setShowAddedToCart(false), 3000);
-    };
+    const handleRemoveFromCart = async() => {
+        try {
+            setIsLoading(true);
+            const res = await removeProductFromCart(userId, product?._id);
+            setIsInCart(false);
+            setQuantity(1); 
+            setShowRemovedFromCart(true);
+            setTimeout(() => {
+                setShowRemovedFromCart(false);
+            }, 3000);
+        } catch (error) {
+            console.error('Error removing product from cart:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    const handleQuantityChange = async(action) => {
+        try {
+            if (action === CART_ACTIONS.INCREMENT) {
+                setIsLoading(true);
+                const res = await increaseQuantity(userId, product?._id);
+                setQuantity(prev => prev + 1);
+            } else if (action === CART_ACTIONS.DECREMENT && quantity > 1) {
+                setIsLoading(true);
+                const res = await decreaseQuantity(userId, product?._id);
+                setQuantity(prev => prev - 1);
+            }
+        } catch (error) {
+            console.error('Error updating quantity:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     const handleWishlist = () => {
         setIsWishlisted(!isWishlisted);
@@ -103,7 +158,6 @@ const ProductDetailsPage = () => {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <PrimaryLoader isLoading={isLoading} />
             <Header />
 
             <div className="bg-white border-b border-gray-100">
@@ -121,6 +175,7 @@ const ProductDetailsPage = () => {
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <PrimaryLoader isLoading={isLoading} />
                 <div className="grid lg:grid-cols-12 gap-8">
                     <div className="lg:col-span-7">
                         <div className="sticky top-6">
@@ -187,7 +242,7 @@ const ProductDetailsPage = () => {
                                     </span>
                                     <button
                                         onClick={handleWishlist}
-                                        className={`p-2 rounded-full transition-all duration-200 ${
+                                        className={`p-2 rounded-full cursor-pointer transition-all duration-200 ${
                                             isWishlisted 
                                             ? 'bg-red-50 text-red-600 hover:bg-red-100' 
                                             : 'bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-red-500'
@@ -236,26 +291,28 @@ const ProductDetailsPage = () => {
                                 </div>
 
                                 <div className="space-y-4">
-                                    <div className="flex items-center justify-between">
-                                        <span className="font-medium text-gray-900">Quantity</span>
-                                        <div className="flex items-center">
-                                            <button
-                                                onClick={() => handleQuantityChange('decrement')}
-                                                className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                                disabled={quantity <= 1}
-                                            >
-                                                <Minus className="h-4 w-4" />
-                                            </button>
-                                            <span className="mx-4 text-lg font-semibold min-w-[2rem] text-center">{quantity}</span>
-                                            <button
-                                                onClick={() => handleQuantityChange('increment')}
-                                                className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                                disabled={quantity >= product?.quantity}
-                                            >
-                                                <Plus className="h-4 w-4" />
-                                            </button>
+                                    { isInCart && (
+                                        <div className="flex items-center justify-between">
+                                            <span className="font-medium text-gray-900">Quantity</span>
+                                            <div className="flex items-center">
+                                                <button
+                                                    onClick={() => handleQuantityChange(CART_ACTIONS.DECREMENT)}
+                                                    className="w-10 h-10 rounded-lg cursor-pointer border border-gray-300 flex items-center justify-center hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                                    disabled={quantity <= 1}
+                                                >
+                                                    <Minus className="h-4 w-4" />
+                                                </button>
+                                                <span className="mx-4 text-lg font-semibold min-w-[2rem] text-center">{quantity}</span>
+                                                <button
+                                                    onClick={() => handleQuantityChange(CART_ACTIONS.INCREMENT)}
+                                                    className="w-10 h-10 rounded-lg cursor-pointer border border-gray-300 flex items-center justify-center hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                                    disabled={quantity >= product?.quantity}
+                                                >
+                                                    <Plus className="h-4 w-4" />
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
 
                                     <div className="flex items-center justify-between py-2 border-t border-gray-100">
                                         <span className="font-semibold text-gray-900">Total</span>
@@ -263,14 +320,24 @@ const ProductDetailsPage = () => {
                                     </div>
 
                                     <div className="flex space-x-3">
-                                        <button
-                                            onClick={handleAddToCart}
-                                            className="flex-1 bg-green-600 text-white py-4 px-6 rounded-xl font-semibold hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center"
-                                            disabled={!isInStock}
-                                        >
-                                            <ShoppingCart className="w-5 h-5 mr-2" />
-                                            {isInStock ? 'Add to Cart' : 'Out of Stock'}
-                                        </button>
+                                        {isInCart ? (
+                                            <button
+                                                onClick={handleRemoveFromCart}
+                                                className="flex-1 bg-red-600 cursor-pointer text-white py-4 px-6 rounded-xl font-semibold hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center"
+                                            >
+                                                <X className="w-5 h-5 mr-2" />
+                                                Remove from Cart
+                                            </button>
+                                        ) : (
+                                            <button
+                                                onClick={handleAddToCart}
+                                                className="flex-1 bg-green-600 cursor-pointer text-white py-4 px-6 rounded-xl font-semibold hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center"
+                                                disabled={!isInStock}
+                                            >
+                                                <ShoppingCart className="w-5 h-5 mr-2" />
+                                                {isInStock ? 'Add to Cart' : 'Out of Stock'}
+                                            </button>
+                                        )}
                                         <button className="p-4 rounded-xl border border-gray-300 hover:border-gray-400 transition-colors">
                                             <Share2 className="h-5 w-5 text-gray-600" />
                                         </button>
