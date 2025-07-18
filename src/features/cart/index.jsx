@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Minus, Plus, Trash2, ShoppingCart, ArrowLeft, Truck, Shield, Clock, Tag, CreditCard, MapPin, User, Phone, Mail } from 'lucide-react';
+import { Minus, Plus, Trash2, ArrowLeft, Truck, Shield, Clock, Tag, CreditCard, MapPin, User, Phone, Mail } from 'lucide-react';
 import Header from '../../components/layout/Header';
 import { decreaseQuantity, getCartByUserId, increaseQuantity, removeProductFromCart } from '../../services/api';
 import PrimaryLoader from '../../components/loaders/PrimaryLoader';
 import { CART_ACTIONS } from '../../config/constants';
+import axiosInstance from '../../services/axios';
 
 export default function index() {
     const userId = '686fbc3fddb3fa12336d0a16';
@@ -13,6 +14,21 @@ export default function index() {
     const [isPromoApplied, setIsPromoApplied] = useState(false);
     const [showCheckout, setShowCheckout] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [orderLoading, setOrderLoading] = useState(false);
+    
+    // Checkout form state
+    const [orderForm, setOrderForm] = useState({
+        fullName: '',
+        phone: '',
+        email: '',
+        address: '',
+        city: '',
+        state: '',
+        postalCode: '',
+        country: 'India',
+        deliveryTime: 'Same Day (6-8 PM)',
+        paymentMethod: 'Credit/Debit Card'
+    });
 
     useEffect(() => {
         const fetchCart = async () => {
@@ -120,6 +136,98 @@ export default function index() {
         handleRemoveFromCart(productId);
     };
 
+    // Handle form input changes
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setOrderForm(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    // Create order API call
+    const createOrder = async (orderData) => {
+        try {
+            const response = axiosInstance.post('/orders/add-order', orderData);
+            const result = await response;
+            return result;
+        } catch (error) {
+            console.error('Error creating order:', error);
+            throw error;
+        }
+    };
+
+    // Handle order placement
+    const handlePlaceOrder = async () => {
+        // Validate form
+        if (!orderForm.fullName || !orderForm.phone || !orderForm.email || !orderForm.address || !orderForm.city || !orderForm.state || !orderForm.postalCode) {
+            alert('Please fill in all required fields');
+            return;
+        }
+
+        try {
+            setOrderLoading(true);
+
+            // Prepare order data according to your schema
+            const orderData = {
+                userId: userId,
+                orderItems: cartItems.map(item => ({
+                    productId: item.id,
+                    productName: item.name,
+                    productImage: item.image,
+                    price: item.originalPrice,
+                    discountPrice: item.price,
+                    weight: item.weight,
+                    weightUnit: item.unit,
+                    quantity: item.quantity
+                })),
+                shippingAddress: {
+                    address: orderForm.address,
+                    city: orderForm.city,
+                    state: orderForm.state,
+                    postalCode: orderForm.postalCode,
+                    country: orderForm.country
+                },
+                paymentMethod: orderForm.paymentMethod,
+                shippingPrice: deliveryFee,
+                totalPrice: total,
+                isPaid: orderForm.paymentMethod === 'Cash on Delivery' ? false : true,
+                paidAt: orderForm.paymentMethod === 'Cash on Delivery' ? null : new Date()
+            };
+
+            // Create the order
+            const result = await createOrder(orderData);
+            
+            // Clear cart after successful order
+            // You might want to call a clear cart API here
+            setCartItems([]);
+            
+            // Show success message
+            alert('Order placed successfully! Order ID: ' + result._id);
+            
+            // Reset form and go back to cart view
+            setShowCheckout(false);
+            setOrderForm({
+                fullName: '',
+                phone: '',
+                email: '',
+                address: '',
+                city: '',
+                state: '',
+                postalCode: '',
+                country: 'India',
+                deliveryTime: 'Same Day (6-8 PM)',
+                paymentMethod: 'Credit/Debit Card'
+            });
+            
+        } catch (error) {
+            console.error('Error placing order:', error);
+            alert('Failed to place order. Please try again.');
+        } finally {
+            setOrderLoading(false);
+        }
+    };
+
     const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const originalTotal = cartItems.reduce((sum, item) => sum + (item.originalPrice * item.quantity), 0);
     const savings = originalTotal - subtotal;
@@ -131,7 +239,7 @@ export default function index() {
         return (
             <div className="min-h-screen bg-gray-50">
                 <Header />
-                <PrimaryLoader isLoading={isLoading} />
+                <PrimaryLoader isLoading={isLoading || orderLoading} />
 
                 <div className="max-w-4xl mx-auto px-4 py-8">
                     <div className="flex items-center mb-6">
@@ -152,40 +260,129 @@ export default function index() {
                             
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Full Name</label>
+                                    <label className="block text-sm font-medium mb-2">Full Name *</label>
                                     <div className="relative">
                                         <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                                        <input type="text" className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="Enter your full name" />
+                                        <input 
+                                            type="text" 
+                                            name="fullName"
+                                            value={orderForm.fullName}
+                                            onChange={handleInputChange}
+                                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+                                            placeholder="Enter your full name"
+                                            required
+                                        />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Phone Number</label>
+                                    <label className="block text-sm font-medium mb-2">Phone Number *</label>
                                     <div className="relative">
                                         <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                                        <input type="tel" className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="Enter your phone number" />
+                                        <input 
+                                            type="tel" 
+                                            name="phone"
+                                            value={orderForm.phone}
+                                            onChange={handleInputChange}
+                                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+                                            placeholder="Enter your phone number"
+                                            required
+                                        />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Email Address</label>
+                                    <label className="block text-sm font-medium mb-2">Email Address *</label>
                                     <div className="relative">
                                         <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                                        <input type="email" className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="Enter your email" />
+                                        <input 
+                                            type="email" 
+                                            name="email"
+                                            value={orderForm.email}
+                                            onChange={handleInputChange}
+                                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+                                            placeholder="Enter your email"
+                                            required
+                                        />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Delivery Address</label>
+                                    <label className="block text-sm font-medium mb-2">Delivery Address *</label>
                                     <div className="relative">
                                         <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                                        <textarea className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent h-20 resize-none" placeholder="Enter your complete delivery address"></textarea>
+                                        <textarea 
+                                            name="address"
+                                            value={orderForm.address}
+                                            onChange={handleInputChange}
+                                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent h-20 resize-none" 
+                                            placeholder="Enter your complete delivery address"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">City *</label>
+                                        <input 
+                                            type="text" 
+                                            name="city"
+                                            value={orderForm.city}
+                                            onChange={handleInputChange}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+                                            placeholder="Enter city"
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">State *</label>
+                                        <input 
+                                            type="text" 
+                                            name="state"
+                                            value={orderForm.state}
+                                            onChange={handleInputChange}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+                                            placeholder="Enter state"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">Postal Code *</label>
+                                        <input 
+                                            type="text" 
+                                            name="postalCode"
+                                            value={orderForm.postalCode}
+                                            onChange={handleInputChange}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+                                            placeholder="Enter postal code"
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">Country</label>
+                                        <input 
+                                            type="text" 
+                                            name="country"
+                                            value={orderForm.country}
+                                            onChange={handleInputChange}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+                                            placeholder="Enter country"
+                                        />
                                     </div>
                                 </div>
 
                                 <div>
                                     <label className="block text-sm font-medium mb-2">Delivery Time</label>
-                                    <select className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                                    <select 
+                                        name="deliveryTime"
+                                        value={orderForm.deliveryTime}
+                                        onChange={handleInputChange}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                    >
                                         <option>Same Day (6-8 PM)</option>
                                         <option>Next Day (8-10 AM)</option>
                                         <option>Next Day (10-12 PM)</option>
@@ -198,17 +395,38 @@ export default function index() {
                                 <h3 className="text-lg font-semibold mb-4">Payment Method</h3>
                                 <div className="space-y-3">
                                     <label className="flex items-center">
-                                        <input type="radio" name="payment" className="mr-3" defaultChecked />
+                                        <input 
+                                            type="radio" 
+                                            name="paymentMethod" 
+                                            value="Credit/Debit Card"
+                                            checked={orderForm.paymentMethod === 'Credit/Debit Card'}
+                                            onChange={handleInputChange}
+                                            className="mr-3" 
+                                        />
                                         <CreditCard className="h-4 w-4 mr-2" />
                                         <span>Credit/Debit Card</span>
                                     </label>
                                     <label className="flex items-center">
-                                        <input type="radio" name="payment" className="mr-3" />
+                                        <input 
+                                            type="radio" 
+                                            name="paymentMethod" 
+                                            value="UPI Payment"
+                                            checked={orderForm.paymentMethod === 'UPI Payment'}
+                                            onChange={handleInputChange}
+                                            className="mr-3" 
+                                        />
                                         <span className="mr-2">💳</span>
                                         <span>UPI Payment</span>
                                     </label>
                                     <label className="flex items-center">
-                                        <input type="radio" name="payment" className="mr-3" />
+                                        <input 
+                                            type="radio" 
+                                            name="paymentMethod" 
+                                            value="Cash on Delivery"
+                                            checked={orderForm.paymentMethod === 'Cash on Delivery'}
+                                            onChange={handleInputChange}
+                                            className="mr-3" 
+                                        />
                                         <span className="mr-2">💵</span>
                                         <span>Cash on Delivery</span>
                                     </label>
@@ -267,8 +485,12 @@ export default function index() {
                                 </div>
                             </div>
 
-                            <button className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors mt-6">
-                                Place Order
+                            <button 
+                                onClick={handlePlaceOrder}
+                                disabled={orderLoading}
+                                className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors mt-6 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                            >
+                                {orderLoading ? 'Placing Order...' : 'Place Order'}
                             </button>
 
                             <div className="mt-4 text-center text-sm text-gray-600">
