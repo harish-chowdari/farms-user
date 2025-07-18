@@ -148,7 +148,7 @@ export default function index() {
     // Create order API call
     const createOrder = async (orderData) => {
         try {
-            const response = axiosInstance.post('/orders/add-order', orderData);
+            const response = axiosInstance.post('/api/orders/add-order', orderData);
             const result = await response;
             return result;
         } catch (error) {

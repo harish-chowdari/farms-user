@@ -2,7 +2,7 @@ import axiosInstance from "./axios";
 
 async function getAllProducts() {
     try {
-        const response = await axiosInstance.get('/products/get-products/paginated');
+        const response = await axiosInstance.get('/api/products/get-products/paginated');
         return response?.data;
     } catch (error) {
         console.error('API Error:', error);
@@ -13,7 +13,7 @@ async function getAllProducts() {
 
 async function addProductToCart(userId, quantity, productId) {
     try {
-        const response = await axiosInstance.post(`/auth/add-product-to-cart/${userId}`, { productId, quantity });
+        const response = await axiosInstance.post(`/api/auth/add-product-to-cart/${userId}`, { productId, quantity });
         return response?.data;
     } catch (error) {
         console.error('API error:', error);
@@ -24,7 +24,7 @@ async function addProductToCart(userId, quantity, productId) {
 // auth/increase-quantity
 async function increaseQuantity(userId, productId) {
     try {
-        const response = await axiosInstance.put(`/auth/increase-quantity/${userId}/${productId}`);
+        const response = await axiosInstance.put(`/api/auth/increase-quantity/${userId}/${productId}`);
         return response?.data;
     } catch (error) {
         console.error('API error:', error);
@@ -34,7 +34,7 @@ async function increaseQuantity(userId, productId) {
 
 async function decreaseQuantity(userId, productId) {
     try {
-        const response = await axiosInstance.put(`/auth/decrease-quantity/${userId}/${productId}`);
+        const response = await axiosInstance.put(`/api/auth/decrease-quantity/${userId}/${productId}`);
         return response?.data;
     } catch (error) {
         console.error('API error:', error);
@@ -44,7 +44,7 @@ async function decreaseQuantity(userId, productId) {
 
 async function removeProductFromCart(userId, productId) {
     try {
-        const response = await axiosInstance.delete(`/auth/remove-product-from-cart/${userId}/${productId}`);
+        const response = await axiosInstance.delete(`/api/auth/remove-product-from-cart/${userId}/${productId}`);
         return response?.data;
     } catch (error) {
         console.error('API error:', error);
@@ -55,7 +55,7 @@ async function removeProductFromCart(userId, productId) {
 
 async function getCartByUserId(userId) {
     try {
-        const response = await axiosInstance.get(`/auth/get-cart/${userId}`);
+        const response = await axiosInstance.get(`/api/auth/get-cart/${userId}`);
         return response?.data;
     } catch (error) {
         console.error('API Error:', error);
