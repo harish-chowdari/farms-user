@@ -12,6 +12,8 @@ const Cart = lazy(() => import("../features/cart"));
 // const Wishlist = lazy(() => import("../features/wishlist"));
 // const Profile = lazy(() => import("../features/profile"));
 
+const Orders = lazy(() => import("../features/orders"));
+
 
 export const restrictedRoutes = [
     { path: ROUTES.HOME, element: <Home /> },
@@ -22,5 +24,6 @@ export const restrictedRoutes = [
     // { path: ROUTES.CHECKOUT, element: <Checkout /> },
     // { path: ROUTES.WISHLIST, element: <Wishlist /> },
     // { path: ROUTES.PROFILE, element: <Profile /> },
+    { path: ROUTES.ORDERS, element: <Orders /> },
 ];
  

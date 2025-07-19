@@ -16,6 +16,9 @@ const ROUTES = {
     CHECKOUT: '/checkout',
     WISHLIST: '/wishlist',
     PROFILE: '/profile',
+
+    // ORDER
+    ORDERS: '/orders',
 }
 
 export default ROUTES

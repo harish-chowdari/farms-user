@@ -3,6 +3,7 @@ import { Search, ShoppingCart, User, Menu, X, MapPin, Phone, Bell } from 'lucide
 import { useNavigate } from 'react-router-dom';
 
 import {logo} from '../../assets/index';
+import ROUTES from '../../navigations/routes';
 
 
 const Header = () => {
@@ -86,35 +87,34 @@ const Header = () => {
                         <div className="relative">
                             <button
                                 onClick={toggleProfile}
-                                className="flex items-center space-x-1 cursor-pointer p-2 text-gray-700 hover:text-green-600"
+                                className={`flex items-center space-x-1 cursor-pointer p-2 text-gray-700 hover:text-green-600 ${isProfileOpen ? 'text-green-600' : ''}`}
                             >
                                 <User className="h-6 w-6" />
                                 <span className="text-sm">John Doe</span>
                             </button>
                             {isProfileOpen && (
                                 <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg">
-                                    <a href="#profile" className="block px-4 py-2 text-gray-700 hover:bg-green-50">
+                                    <p className="block cursor-pointer px-4 py-2 text-gray-700 hover:bg-green-50">
                                         My Profile
-                                    </a>
-                                    <a href="#orders" className="block px-4 py-2 text-gray-700 hover:bg-green-50">
+                                    </p>
+                                    <p onClick={() => navigate(ROUTES.ORDERS)} className="block cursor-pointer px-4 py-2 text-gray-700 hover:bg-green-50">
                                         My Orders
-                                    </a>
-                                    <a href="#addresses" className="block px-4 py-2 text-gray-700 hover:bg-green-50">
+                                    </p>
+                                    <p className="block cursor-pointer px-4 py-2 text-gray-700 hover:bg-green-50">
                                         Addresses
-                                    </a>
-                                    <a href="#settings" className="block px-4 py-2 text-gray-700 hover:bg-green-50">
+                                    </p>
+                                    <p className="block cursor-pointer px-4 py-2 text-gray-700 hover:bg-green-50">
                                         Settings
-                                    </a>
+                                    </p>
                                     <hr className="my-1" />
-                                    <a href="#logout" className="block px-4 py-2 text-red-600 hover:bg-red-50">
+                                    <p className="block cursor-pointer px-4 py-2 text-red-600 hover:bg-red-50">
                                         Logout
-                                    </a>
+                                    </p>
                                 </div>
                             )}
                         </div>
                     </div>
 
-                    {/* Mobile Menu Button */}
                     <button
                         onClick={toggleMenu}
                         className="md:hidden p-2 text-gray-700 hover:text-green-600"
@@ -172,21 +172,21 @@ const Header = () => {
 
                         {/* Profile Links */}
                         <div className="py-3 border-t border-gray-200 space-y-2">
-                            <a href="#profile" className="block py-2 text-gray-700 hover:text-green-600">
+                            <p className="block cursor-pointer py-2 text-gray-700 hover:text-green-600">
                                 My Profile
-                            </a>
-                            <a href="#orders" className="block py-2 text-gray-700 hover:text-green-600">
+                            </p>
+                            <p onClick={() => navigate(ROUTES.ORDERS)} className="block cursor-pointer py-2 text-gray-700 hover:text-green-600">
                                 My Orders
-                            </a>
-                            <a href="#addresses" className="block py-2 text-gray-700 hover:text-green-600">
+                            </p>
+                            <p className="block cursor-pointer py-2 text-gray-700 hover:text-green-600">
                                 My Addresses
-                            </a>
-                            <a href="#settings" className="block py-2 text-gray-700 hover:text-green-600">
+                            </p>
+                            <p className="block cursor-pointer py-2 text-gray-700 hover:text-green-600">
                                 Settings
-                            </a>
-                            <a href="#logout" className="block py-2 text-red-600 hover:text-red-700">
+                            </p>
+                            <p className="block cursor-pointer py-2 text-red-600 hover:text-red-700">
                                 Logout
-                            </a>
+                            </p>
                         </div>
                     </div>
                 </div>
