@@ -12,28 +12,32 @@ const Header = () => {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
-    const [cartCount] = useState(3); // Example cart count
-    const [wishlistCount] = useState(5); // Example wishlist count
+    const [cartCount] = useState(3); 
+    const [wishlistCount] = useState(5);
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
     const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
 
     return (
         <header className="bg-white shadow-lg sticky top-0 z-50">
+            {/* Top Info Bar */}
             <div className="bg-green-600 text-white text-sm py-2 px-4">
                 <div className="max-w-7xl mx-auto flex justify-between items-center">
                     <div className="flex items-center space-x-4">
                         <div className="flex items-center space-x-1">
                             <Phone className="w-4 h-4" />
-                            <span>+91 98765 43210</span>
+                            <span className="hidden sm:inline">+91 98765 43210</span>
+                            <span className="sm:hidden">+91 98765 43210</span>
                         </div>
-                        <div className="flex items-center space-x-1">
+                        <div className="hidden sm:flex items-center space-x-1">
                             <MapPin className="w-4 h-4" />
                             <span>Free delivery in Vijayawada</span>
                         </div>
                     </div>
-                    <div className="hidden md:block">
-                        <span>Fresh from Farm to Your Table 🌱</span>
+                    <div className="flex items-center space-x-1">
+                        <MapPin className="w-4 h-4 sm:hidden" />
+                        <span className="sm:hidden text-xs">Vijayawada</span>
+                        <span className="hidden md:block">Fresh from Farm to Your Table 🌱</span>
                     </div>
                 </div>
             </div>
@@ -46,18 +50,18 @@ const Header = () => {
                         <div className="flex-shrink-0">
                             <div onClick={() => navigate('/')} className="text-2xl flex gap-1 items-center cursor-pointer font-bold text-green-600">
                                 <img className='w-10 h-10' src={logo} /> 
-                                <p>Sunotal Farms</p>
+                                <p className="hidden md:block">Sunotal Farms</p>
                             </div>
                         </div>
                     </div>
 
-                    {/* Search Bar */}
-                    <div className="hidden md:flex flex-1 max-w-lg mx-8">
+                    {/* Search Bar - Desktop and Mobile */}
+                    <div className="flex flex-1 max-w-lg mx-4 md:mx-8">
                         <div className="relative w-full">
                             <input
                                 type="text"
                                 placeholder="Search fresh produce..."
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm md:text-base"
                             />
                             <Search className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
                         </div>
@@ -95,16 +99,13 @@ const Header = () => {
                             {isProfileOpen && (
                                 <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg">
                                     <p className="block cursor-pointer px-4 py-2 text-gray-700 hover:bg-green-50">
-                                        My Profile
+                                        Profile
                                     </p>
                                     <p onClick={() => navigate(ROUTES.ORDERS)} className="block cursor-pointer px-4 py-2 text-gray-700 hover:bg-green-50">
-                                        My Orders
+                                        Orders
                                     </p>
-                                    <p className="block cursor-pointer px-4 py-2 text-gray-700 hover:bg-green-50">
-                                        Addresses
-                                    </p>
-                                    <p className="block cursor-pointer px-4 py-2 text-gray-700 hover:bg-green-50">
-                                        Settings
+                                    <p onClick={() => navigate(ROUTES.ADDRESS)} className="block cursor-pointer px-4 py-2 text-gray-700 hover:bg-green-50">
+                                        Address
                                     </p>
                                     <hr className="my-1" />
                                     <p className="block cursor-pointer px-4 py-2 text-red-600 hover:bg-red-50">
@@ -115,24 +116,13 @@ const Header = () => {
                         </div>
                     </div>
 
+                    {/* Mobile Menu Button */}
                     <button
                         onClick={toggleMenu}
                         className="md:hidden p-2 text-gray-700 hover:text-green-600"
                     >
                         {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                     </button>
-                </div>
-            </div>
-
-            {/* Mobile Search Bar */}
-            <div className="md:hidden px-4 py-3 bg-gray-50">
-                <div className="relative">
-                    <input
-                        type="text"
-                        placeholder="Search fresh produce..."
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    />
-                    <Search className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
                 </div>
             </div>
 
@@ -173,16 +163,13 @@ const Header = () => {
                         {/* Profile Links */}
                         <div className="py-3 border-t border-gray-200 space-y-2">
                             <p className="block cursor-pointer py-2 text-gray-700 hover:text-green-600">
-                                My Profile
+                                Profile
                             </p>
                             <p onClick={() => navigate(ROUTES.ORDERS)} className="block cursor-pointer py-2 text-gray-700 hover:text-green-600">
-                                My Orders
+                                Orders
                             </p>
-                            <p className="block cursor-pointer py-2 text-gray-700 hover:text-green-600">
-                                My Addresses
-                            </p>
-                            <p className="block cursor-pointer py-2 text-gray-700 hover:text-green-600">
-                                Settings
+                            <p onClick={() => navigate(ROUTES.ADDRESS)} className="block cursor-pointer py-2 text-gray-700 hover:text-green-600">
+                                Address
                             </p>
                             <p className="block cursor-pointer py-2 text-red-600 hover:text-red-700">
                                 Logout

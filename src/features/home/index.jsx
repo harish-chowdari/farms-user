@@ -112,31 +112,31 @@ const SunotalHomePage = () => {
     return (
         <div className="min-h-screen bg-gray-50">
             <Header />
-            <section className="py-12 bg-white">
+            <section className="md:py-12 py-8 bg-white">
                 <div className="max-w-7xl mx-auto px-4">
-                    <div className="grid md:grid-cols-4 gap-8">
-                        <div className="text-center">
-                            <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 md:gap-8 gap-4">
+                        <div className="text-center border rounded-xl p-2 border-gray-300">
+                            <div className="bg-green-100  w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Truck className="h-8 w-8 text-green-600" />
                             </div>
                             <h3 className="font-semibold text-lg mb-2">Free Delivery</h3>
                             <p className="text-gray-600">Free delivery on orders above ₹500</p>
                         </div>
-                        <div className="text-center">
+                        <div className="text-center border rounded-xl p-2 border-gray-300">
                             <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Shield className="h-8 w-8 text-green-600" />
                             </div>
                             <h3 className="font-semibold text-lg mb-2">Quality Assured</h3>
                             <p className="text-gray-600">100% fresh & quality guaranteed</p>
                         </div>
-                        <div className="text-center">
+                        <div className="text-center border rounded-xl p-2 border-gray-300">
                             <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Leaf className="h-8 w-8 text-green-600" />
                             </div>
                             <h3 className="font-semibold text-lg mb-2">Farm Fresh</h3>
                             <p className="text-gray-600">Direct from local farmers</p>
                         </div>
-                        <div className="text-center">
+                        <div className="text-center border rounded-xl p-2 border-gray-300">
                             <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Clock className="h-8 w-8 text-green-600" />
                             </div>
@@ -150,12 +150,12 @@ const SunotalHomePage = () => {
             <section className="py-16 bg-gray-50">
                 <div className="max-w-7xl mx-auto px-4">
                     <h2 className="text-3xl font-bold text-center mb-12">Shop by Category</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                    <div className="grid items-center justify-center grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
                         {categories?.map((category, index) => (
                         <div key={index} className={`${category.color} p-6 rounded-lg text-center cursor-pointer transition-all hover:scale-105`}>
-                            <img src={category.img} alt={category.name} className="w-28 h-28 mx-auto mb-4" />
+                            <img src={category.img} alt={category.name} className="md:w-44 md:h-32 w-32 h-28 mx-auto mb-4" />
                             <h3 className="font-semibold text-lg mb-1">{category.name}</h3>
-                            <p className="text-sm text-gray-600">{category.count}</p>
+                            {/* <p className="text-sm text-gray-600">{category.count}</p> */}
                         </div>
                         ))}
                     </div>

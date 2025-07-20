@@ -181,7 +181,7 @@ export default function index() {
                     weightUnit: item.unit,
                     quantity: item.quantity
                 })),
-                shippingAddress: {
+                deliveryAddress: {
                     address: orderForm.address,
                     city: orderForm.city,
                     state: orderForm.state,

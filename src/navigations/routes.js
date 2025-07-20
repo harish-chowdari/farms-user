@@ -19,6 +19,9 @@ const ROUTES = {
 
     // ORDER
     ORDERS: '/orders',
+
+    // ADDRESS
+    ADDRESS: '/address',
 }
 
 export default ROUTES

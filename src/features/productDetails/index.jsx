@@ -418,7 +418,7 @@ const ProductDetailsPage = () => {
                 <div className="mt-16">
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                         <div className="border-b border-gray-200">
-                            <nav className="flex">
+                            <nav className="flex overflow-x-auto">
                                 {[
                                     { key: 'description', label: 'Description' },
                                     { key: 'nutrition', label: 'Nutrition' },
