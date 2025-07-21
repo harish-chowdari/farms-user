@@ -140,8 +140,6 @@ const ProductDetailsPage = () => {
                     <nav className="flex items-center py-4 text-sm">
                         <a href="#" className="text-gray-500 hover:text-gray-700 transition-colors">Home</a>
                         <span className="mx-2 text-gray-300">/</span>
-                        <a href="#" className="text-gray-500 hover:text-gray-700 transition-colors">Fresh Produce</a>
-                        <span className="mx-2 text-gray-300">/</span>
                         <a href="#" className="text-gray-500 hover:text-gray-700 transition-colors">{product?.category}</a>
                         <span className="mx-2 text-gray-300">/</span>
                         <span className="text-gray-900 font-medium">{product?.productName}</span>
@@ -261,7 +259,7 @@ const ProductDetailsPage = () => {
                                     </div>
                                     <div className="flex items-center">
                                         <Truck className="w-4 h-4 mr-1" />
-                                        <span>Free shipping</span>
+                                        <span>Free Delivery</span>
                                     </div>
                                 </div>
 
