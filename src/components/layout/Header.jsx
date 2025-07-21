@@ -108,7 +108,7 @@ const Header = () => {
                                         Address
                                     </p>
                                     <hr className="my-1" />
-                                    <p className="block cursor-pointer px-4 py-2 text-red-600 hover:bg-red-50">
+                                    <p onClick={() => navigate('/login')} className="block cursor-pointer px-4 py-2 text-red-600 hover:bg-red-50">
                                         Logout
                                     </p>
                                 </div>
@@ -171,7 +171,7 @@ const Header = () => {
                             <p onClick={() => navigate(ROUTES.ADDRESS)} className="block cursor-pointer py-2 text-gray-700 hover:text-green-600">
                                 Address
                             </p>
-                            <p className="block cursor-pointer py-2 text-red-600 hover:text-red-700">
+                            <p onClick={() => navigate('/login')} className="block cursor-pointer py-2 text-red-600 hover:text-red-700">
                                 Logout
                             </p>
                         </div>

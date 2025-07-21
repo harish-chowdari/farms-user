@@ -3,13 +3,13 @@ import { MapPin, Edit3, Trash2, Home, Building, Users } from 'lucide-react';
 import Header from '../../components/layout/Header';
 
 export default function AddressPage() {
-	const [address, setAddress] = useState(null); 
+	const [addressLine, setAddressLine] = useState(null); 
 	const [showForm, setShowForm] = useState(false);
 	const [formData, setFormData] = useState({
 		type: 'home',
 		title: '',
 		phone: '',
-		address: '',
+		addressLine: '',
 		area: '',
 		city: 'Vijayawada',
 		pincode: '',
@@ -27,17 +27,17 @@ export default function AddressPage() {
 	};
 
 	const handleSubmit = () => {
-		if (!formData.phone || !formData.address || !formData.area || !formData.pincode) {
+		if (!formData.phone || !formData.addressLine || !formData.area || !formData.pincode) {
 			alert('Please fill in all required fields');
 			return;
 		}
 		
-		setAddress({ ...formData, id: Date.now() });
+		setAddressLine({ ...formData, id: Date.now() });
 		setFormData({
 			type: 'home',
 			title: '',
 			phone: '',
-			address: '',
+			addressLine: '',
 			area: '',
 			city: 'Bengaluru',
 			pincode: '',
@@ -47,12 +47,12 @@ export default function AddressPage() {
 	};
 
 	const handleEdit = () => {
-		setFormData(address);
+		setFormData(addressLine);
 		setShowForm(true);
 	};
 
 	const handleDelete = () => {
-		setAddress(null);
+		setAddressLine(null);
 		setShowForm(false);
 	};
 
@@ -62,7 +62,7 @@ export default function AddressPage() {
 		return <IconComponent className="w-4 h-4" />;
 	};
 
-	const shouldShowForm = !address || showForm;
+	const shouldShowForm = !addressLine || showForm;
 
 	return (
 		<div className="min-h-screen bg-gray-50">
@@ -82,9 +82,9 @@ export default function AddressPage() {
 					<div className="bg-white rounded-lg shadow-lg p-6 mb-6 border border-gray-200">
 						<div className="flex items-center justify-between mb-4">
 							<h2 className="text-lg font-semibold text-gray-800">
-								{address ? 'Edit Address' : 'Add Your Address'}
+								{addressLine ? 'Edit Address' : 'Add Your Address'}
 							</h2>
-							{address && (
+							{addressLine && (
 								<button
 									onClick={() => {
 										setShowForm(false);
@@ -92,7 +92,7 @@ export default function AddressPage() {
 											type: 'home',
 											title: '',
 											phone: '',
-											address: '',
+											addressLine: '',
 											area: '',
 											city: 'Bengaluru',
 											pincode: '',
@@ -156,8 +156,8 @@ export default function AddressPage() {
 							{/* Address Details */}
 							<textarea
 								placeholder="House/Flat/Office No, Building Name, Street *"
-								value={formData.address}
-								onChange={(e) => handleInputChange('address', e.target.value)}
+								value={formData.addressLine}
+								onChange={(e) => handleInputChange('addressLine', e.target.value)}
 								className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 h-20 resize-none"
 								required
 							/>
@@ -203,9 +203,9 @@ export default function AddressPage() {
 									onClick={handleSubmit}
 									className="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-medium"
 								>
-									{address ? 'Update Address' : 'Save Address'}
+									{addressLine ? 'Update Address' : 'Save Address'}
 								</button>
-								{address && (
+								{addressLine && (
 									<button
 										type="button"
 										onClick={() => setShowForm(false)}
@@ -219,26 +219,26 @@ export default function AddressPage() {
 					</div>
 				)}
 
-				{/* Address Display - Show when address exists and not editing */}
-				{address && !showForm && (
+				{/* Address Display - Show when addressLine exists and not editing */}
+				{addressLine && !showForm && (
 					<div className="rounded-lg shadow-sm p-5 border-2 border-green-500 bg-green-50">
 						<div className="flex items-start justify-between">
 							<div className="flex-1">
 								<div className="flex items-center gap-2 mb-2">
-									{getTypeIcon(address.type)}
-									<span className="font-semibold text-gray-800">{address.title || address.type}</span>
+									{getTypeIcon(addressLine.type)}
+									<span className="font-semibold text-gray-800">{addressLine.title || addressLine.type}</span>
 									<span className="bg-green-600 text-white text-xs px-2 py-1 rounded">
 										Default
 									</span>
 								</div>
 								
 								<div className="text-gray-700 mb-1">
-									<span className="font-medium">{address.phone}</span>
+									<span className="font-medium">{addressLine.phone}</span>
 								</div>
 								
 								<div className="text-gray-600 text-sm leading-relaxed">
-									{address.address}<br />
-									{address.area}, {address.city}, {address.state} - {address.pincode}
+									{addressLine.addressLine}<br />
+									{addressLine.area}, {addressLine.city}, {addressLine.state} - {addressLine.pincode}
 								</div>
 							</div>
 
@@ -263,11 +263,11 @@ export default function AddressPage() {
 				)}
 
 				{/* No Address State */}
-				{!address && !showForm && (
+				{!addressLine && !showForm && (
 					<div className="text-center py-12">
 						<MapPin className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-						<h3 className="text-lg font-medium text-gray-500 mb-2">No address saved</h3>
-						<p className="text-gray-400">Add your delivery address to get started with orders</p>
+						<h3 className="text-lg font-medium text-gray-500 mb-2">No addressLine saved</h3>
+						<p className="text-gray-400">Add your delivery addressLine to get started with orders</p>
 					</div>
 				)}
 			</div>

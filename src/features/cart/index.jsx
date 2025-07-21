@@ -20,11 +20,10 @@ export default function index() {
     const [orderForm, setOrderForm] = useState({
         fullName: '',
         phone: '',
-        email: '',
-        address: '',
+        addressLine: '',
         city: '',
         state: '',
-        postalCode: '',
+        pincode: '',
         country: 'India',
         deliveryTime: 'Same Day (6-8 PM)',
         paymentMethod: 'Credit/Debit Card'
@@ -160,7 +159,7 @@ export default function index() {
     // Handle order placement
     const handlePlaceOrder = async () => {
         // Validate form
-        if (!orderForm.fullName || !orderForm.phone || !orderForm.email || !orderForm.address || !orderForm.city || !orderForm.state || !orderForm.postalCode) {
+        if (!orderForm.fullName || !orderForm.phone || !orderForm.addressLine || !orderForm.city || !orderForm.state || !orderForm.pincode) {
             alert('Please fill in all required fields');
             return;
         }
@@ -182,10 +181,10 @@ export default function index() {
                     quantity: item.quantity
                 })),
                 deliveryAddress: {
-                    address: orderForm.address,
+                    addressLine: orderForm.addressLine,
                     city: orderForm.city,
                     state: orderForm.state,
-                    postalCode: orderForm.postalCode,
+                    pincode: orderForm.pincode,
                     country: orderForm.country
                 },
                 paymentMethod: orderForm.paymentMethod,
@@ -210,11 +209,10 @@ export default function index() {
             setOrderForm({
                 fullName: '',
                 phone: '',
-                email: '',
-                address: '',
+                addressLine: '',
                 city: '',
                 state: '',
-                postalCode: '',
+                pincode: '',
                 country: 'India',
                 deliveryTime: 'Same Day (6-8 PM)',
                 paymentMethod: 'Credit/Debit Card'
@@ -292,31 +290,15 @@ export default function index() {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Email Address *</label>
-                                    <div className="relative">
-                                        <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                                        <input 
-                                            type="email" 
-                                            name="email"
-                                            value={orderForm.email}
-                                            onChange={handleInputChange}
-                                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" 
-                                            placeholder="Enter your email"
-                                            required
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
                                     <label className="block text-sm font-medium mb-2">Delivery Address *</label>
                                     <div className="relative">
                                         <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                                         <textarea 
-                                            name="address"
-                                            value={orderForm.address}
+                                            name="addressLine"
+                                            value={orderForm.addressLine}
                                             onChange={handleInputChange}
                                             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent h-20 resize-none" 
-                                            placeholder="Enter your complete delivery address"
+                                            placeholder="Enter your complete delivery addressLine"
                                             required
                                         />
                                     </div>
@@ -354,8 +336,8 @@ export default function index() {
                                         <label className="block text-sm font-medium mb-2">Postal Code *</label>
                                         <input 
                                             type="text" 
-                                            name="postalCode"
-                                            value={orderForm.postalCode}
+                                            name="pincode"
+                                            value={orderForm.pincode}
                                             onChange={handleInputChange}
                                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" 
                                             placeholder="Enter postal code"

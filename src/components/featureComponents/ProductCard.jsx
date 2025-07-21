@@ -27,7 +27,7 @@ export default function ProductCard({product}) {
                 setIsLoading(true);
                 const cartRes = await getCartByUserId(userId);
                 const cartItems = cartRes || [];
-                const cartItem = cartItems?.find(item => item.productId === productId);
+                const cartItem = cartItems?.find(item => item.productId === product?._id);
                 if (cartItem) {
                     setQuantity(cartItem?.quantity);
                     setIsInCart(true);
@@ -99,7 +99,7 @@ export default function ProductCard({product}) {
 
     return (
         <div key={product.id} className="bg-white shadow-md border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
-            <div className="relative">
+            <div className="relative border-b border-b-gray-300">
                 <img  
                     onClick={() => navigate(`/product-details/${product?._id}`)} 
                     src={product?.productImage[0]} alt={product.name} 
@@ -119,7 +119,7 @@ export default function ProductCard({product}) {
                     <Heart className="h-4 w-4" />
                 </button>
             </div>
-            <div className="p-4">
+            <div className="p-4 pt-2">
                 <h3 className="font-semibold text-lg mb-1">{product?.productName}</h3>
                 {/* <p className="text-sm text-gray-600 mb-2">by {product?.farmer || 'Harish (Farmer)'}</p> */}
                 {/* <div className="flex items-center mb-2">

@@ -16,21 +16,21 @@ const Login = () => {
 
     const formik = useFormik({
         initialValues: {
-            email: "",
+            phoneNo: "",
             password: ""
         },
         validationSchema: Yup.object({
-            email: Yup.string().email("Invalid email").required("Email is required"),
+            phoneNo: Yup.string().required("Phone Number is required"),
             password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required")
         }),
         onSubmit: async (values) => {
             setErrorMessage("")
             try {
                 setIsLoading(true)
-                const res = await axios.post("/admin-login", values)
-                const adminId = res.data._id
-                localStorage.setItem("adminId", adminId)
-                navigate(`/home/${adminId}`)
+                const res = await axios.post("/api/auth/user-login", values)
+                const userId = res.data._id
+                localStorage.setItem("userId", userId)
+                navigate(`/`)
             } catch (error) {
                 setErrorMessage(error?.response?.data?.error || "An error occurred. Please try again.")
             } finally {
@@ -60,10 +60,10 @@ const Login = () => {
                     )}
 
                     <Input
-                        label="Email"
-                        name="email"
-                        type="email"
-                        placeholder="Enter your email"
+                        label="Phone Number"
+                        name="phoneNo"
+                        type="phoneNo"
+                        placeholder="Enter your phone number"
                         formik={formik}
                     />
 
@@ -93,7 +93,7 @@ const Login = () => {
                     <p className="mt-4 text-center text-green-700">
                         Don't have an account?{" "}
                         <Link to={ROUTES.SIGNUP} className="text-green-600 hover:underline">
-                            Signup1
+                            Signup
                         </Link>
                     </p>
                 </form>
