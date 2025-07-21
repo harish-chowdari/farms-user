@@ -7,6 +7,7 @@ import NewsLetter from '../../components/layout/NewsLetter';
 import { categories } from './utils/options';
 import { getAllProducts } from '../../services/api';
 import ProductCard from '../../components/featureComponents/ProductCard';
+import PrimaryLoader from '../../components/loaders/PrimaryLoader';
 
 const SunotalHomePage = () => {
     
@@ -111,6 +112,7 @@ const SunotalHomePage = () => {
 
     return (
         <div className="min-h-screen bg-gray-50">
+            <PrimaryLoader isLoading={isLoading} />
             <Header />
             <section className="md:py-12 py-8 bg-white">
                 <div className="max-w-7xl mx-auto px-4">

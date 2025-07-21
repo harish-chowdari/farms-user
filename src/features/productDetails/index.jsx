@@ -136,7 +136,7 @@ const ProductDetailsPage = () => {
             <Header />
 
             <div className="bg-white border-b border-gray-100">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                     <nav className="flex items-center py-4 text-sm">
                         <a href="#" className="text-gray-500 hover:text-gray-700 transition-colors">Home</a>
                         <span className="mx-2 text-gray-300">/</span>
@@ -149,18 +149,18 @@ const ProductDetailsPage = () => {
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <PrimaryLoader isLoading={isLoading} />
                 <div className="grid lg:grid-cols-12 gap-8">
                     <div className="lg:col-span-7">
-                        <div className="sticky top-6">
-                            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                                <div className="relative h-[500px] bg-gradient-to-br from-gray-50 to-gray-100">
-                                    <div className="absolute inset-0 flex items-center justify-center p-8">
+                        <div className="sticky top-[130px]">
+                            <div className="bg-white flex items-center justify-center flex-col rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                                <div className="flex items-center justify-center h-[350px]">
+                                    <div className="inset-0 flex items-center justify-center p-2">
                                         <img 
                                             src={product?.productImage?.[selectedImage]} 
                                             alt={product?.productName || 'Product'}
-                                            className="max-w-full max-h-full object-contain drop-shadow-lg"
+                                            className="object-contain"
                                         />
                                     </div>
                                     {!isInStock && (
@@ -182,12 +182,12 @@ const ProductDetailsPage = () => {
                                 
                                 {product?.productImage?.length > 1 && (
                                     <div className="p-4 bg-white border-t border-gray-100">
-                                        <div className="flex space-x-3 overflow-x-auto pb-2">
+                                        <div className="flex gap-y-2 flex-row justify-center space-x-3 overflow-x-auto pb-2">
                                             {product?.productImage?.map((image, index) => (
                                                 <button
                                                     key={index}
                                                     onClick={() => setSelectedImage(index)}
-                                                    className={`flex-shrink-0 w-20 h-20 rounded-xl border-2 overflow-hidden transition-all duration-200 ${
+                                                    className={`flex-shrink-0 md:w-20 md:h-20 w-[50px] h-[50px] rounded-xl border-2 overflow-hidden transition-all duration-200 ${
                                                         selectedImage === index 
                                                         ? 'border-green-500 shadow-lg ring-2 ring-green-100' 
                                                         : 'border-gray-200 hover:border-gray-300'
@@ -393,7 +393,7 @@ const ProductDetailsPage = () => {
                             <nav className="flex overflow-x-auto">
                                 {[
                                     { key: 'description', label: 'Description' },
-                                    { key: 'reviews', label: 'Reviews (24)' },
+                                    { key: 'reviews', label: 'Reviews' },
                                     { key: 'farmer', label: 'Farmer Story' }
                                 ].map((tab) => (
                                     <button

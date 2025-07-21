@@ -99,16 +99,16 @@ export default function Reviews({activeTab, productId}) {
 
     return (
         <div>
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex md:items-center flex-col md:flex-row justify-between mb-8">
                 <div>
-                    <h4 className="text-lg font-semibold text-gray-900">Customer Reviews</h4>
-                    <div className="flex items-center mt-2">
+                    <h4 className="text-lg font-semibold text-nowrap text-gray-900">Customer Reviews</h4>
+                    <div className="flex md:flex-col md:items-start flex-row items-center mt-2">
                         <div className="flex">
                             {[...Array(5)].map((_, i) => (
                                 <Star key={i} className={`h-4 w-4 ${i < averageStarsFilled ? 'text-amber-400 fill-current' : 'text-gray-300'}`} />
                             ))}
                         </div>
-                        <span className="ml-2 text-sm text-gray-600">
+                        <span className="ml-2 md:ml-0 text-sm text-gray-600">
                             {totalReviews > 0 
                                 ? `${averageRating} out of 5 stars (${totalReviews} ${totalReviews === 1 ? 'review' : 'reviews'})`
                                 : 'No reviews yet'
@@ -116,17 +116,13 @@ export default function Reviews({activeTab, productId}) {
                         </span>
                     </div>
                 </div>
-                {!hasUserReviewed ? (
+                {!hasUserReviewed && (
                     <button 
                         onClick={handleWriteReviewClick}
                         className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 font-medium transition-colors"
                     >
                         Write a Review
                     </button>
-                ) : (
-                    <div className="text-sm text-gray-600 bg-gray-100 px-6 py-3 rounded-lg">
-                        You have already reviewed this product
-                    </div>
                 )}
             </div>
 
@@ -213,7 +209,7 @@ export default function Reviews({activeTab, productId}) {
                                     <User className="h-5 w-5 text-green-600" />
                                 </div>
                                 <div>
-                                    <div className="font-medium text-gray-900">{review?.reviewer}</div>
+                                    <div className="font-medium text-gray-900">{'Harish'}</div>
                                     <div className="text-sm text-gray-500">{review?.date}</div>
                                 </div>
                                 {review?.verified && (

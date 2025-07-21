@@ -151,7 +151,7 @@ const Header = () => {
                                 <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">2</span>
                             </button>
                             
-                            <button className="flex cursor-pointer items-center justify-between w-full py-2 text-gray-700 hover:text-green-600">
+                            <button onClick={() => navigate(ROUTES.CART)} className="flex cursor-pointer items-center justify-between w-full py-2 text-gray-700 hover:text-green-600">
                                 <span className="flex items-center space-x-2">
                                     <ShoppingCart className="h-5 w-5" />
                                     <span>Cart</span>
