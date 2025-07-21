@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { User, Heart, X, Star, Truck, Shield, Plus, Minus, Share2, MessageCircle, Award, CheckCircle, ShoppingCart, Clock, Zap, Leaf } from 'lucide-react';
+
 import Header from '../../components/layout/Header';
 import NewsLetter from '../../components/layout/NewsLetter';
 import Footer from '../../components/layout/Footer';
-import { getProduct } from './services/api';
-import { useParams } from 'react-router-dom';
+import ReviewComponent from './components/ReviewComponent';
 import PrimaryLoader from '../../components/loaders/PrimaryLoader';
+
 import { addProductToCart, decreaseQuantity, getCartByUserId, increaseQuantity, removeProductFromCart } from '../../services/api';
+import { getProduct, getReviews } from './services/api';
 import { CART_ACTIONS } from '../../config/constants';
 
 const ProductDetailsPage = () => {
+
     const { productId } = useParams();
+
+    const [reviews, setReviews] = useState([]);
+
     const [quantity, setQuantity] = useState(1);
     const [selectedImage, setSelectedImage] = useState(0);
     const [activeTab, setActiveTab] = useState('description');
@@ -52,6 +59,21 @@ const ProductDetailsPage = () => {
 
         getProductDetails();
     }, [productId])
+
+
+    useEffect(() => {
+        const fetchReviews = async () => {
+            try {
+                const response = await getReviews(productId);
+                console.log(response,'jhv');
+                setReviews(response);
+            } catch (error) {
+                console.error('API error:', error);
+            }
+        }
+        fetchReviews();
+    }, [productId]);
+
 
     const handleAddToCart = async() => {
         try {
@@ -108,51 +130,12 @@ const ProductDetailsPage = () => {
         setIsWishlisted(!isWishlisted);
     };
 
-    const mockReviews = [
-        {
-            id: 1,
-            user: "Priya Sharma",
-            rating: 5,
-            date: "2 days ago",
-            comment: "Excellent quality! Very fresh and good value for money.",
-            helpful: 12,
-            verified: true
-        },
-        {
-            id: 2,
-            user: "Amit Patel",
-            rating: 4,
-            date: "1 week ago",
-            comment: "Good quality organic vegetables. Delivery was on time. Will order again.",
-            helpful: 8,
-            verified: true
-        },
-        {
-            id: 3,
-            user: "Sneha Reddy",
-            rating: 5,
-            date: "2 weeks ago",
-            comment: "Best organic vegetables I've ever bought online. Highly recommended!",
-            helpful: 15,
-            verified: true
-        }
-    ];
-
     const mockFarmer = {
         name: "Rajesh Kumar",
         location: "Karnataka, India",
         experience: "15 years",
         rating: 4.8,
         image: "👨‍🌾"
-    };
-
-    const mockNutrition = {
-        calories: "33 kcal",
-        carbs: "7g",
-        fiber: "3.2g",
-        sugar: "1.5g",
-        protein: "1.9g",
-        fat: "0.2g"
     };
 
     const discount = product?.discountPrice ? Math.round(((product?.price - product?.discountPrice) / product?.price) * 100) : 0;
@@ -421,7 +404,6 @@ const ProductDetailsPage = () => {
                             <nav className="flex overflow-x-auto">
                                 {[
                                     { key: 'description', label: 'Description' },
-                                    { key: 'nutrition', label: 'Nutrition' },
                                     { key: 'reviews', label: 'Reviews (24)' },
                                     { key: 'farmer', label: 'Farmer Story' }
                                 ].map((tab) => (
@@ -487,42 +469,6 @@ const ProductDetailsPage = () => {
                                 </div>
                             )}
 
-                            {activeTab === 'nutrition' && (
-                                <div className="grid md:grid-cols-2 gap-8">
-                                    <div>
-                                        <h4 className="text-lg font-semibold mb-6 text-gray-900">Nutrition Facts</h4>
-                                        <div className="bg-gray-50 rounded-lg p-6">
-                                            <div className="text-sm text-gray-600 mb-4">Per 100g serving</div>
-                                            <div className="space-y-3">
-                                                {Object.entries(mockNutrition).map(([key, value]) => (
-                                                    <div key={key} className="flex justify-between py-2 border-b border-gray-200 last:border-b-0">
-                                                        <span className="capitalize text-gray-700">{key}</span>
-                                                        <span className="font-semibold text-gray-900">{value}</span>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h4 className="text-lg font-semibold mb-6 text-gray-900">Health Benefits</h4>
-                                        <div className="space-y-3">
-                                            {[
-                                                'Rich in antioxidants',
-                                                'Good source of dietary fiber',
-                                                'Supports digestive health',
-                                                'May aid in weight management',
-                                                'Helps regulate blood sugar'
-                                            ].map((benefit, index) => (
-                                                <div key={index} className="flex items-center p-3 bg-green-50 rounded-lg">
-                                                    <CheckCircle className="h-5 w-5 text-green-600 mr-3" />
-                                                    <span className="text-green-800">{benefit}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
                             {activeTab === 'reviews' && (
                                 <div>
                                     <div className="flex items-center justify-between mb-8">
@@ -543,7 +489,7 @@ const ProductDetailsPage = () => {
                                     </div>
                                     
                                     <div className="space-y-6">
-                                        {mockReviews?.map((review) => (
+                                        {reviews?.map((review) => (
                                             <div key={review?.id} className="bg-gray-50 rounded-lg p-6">
                                                 <div className="flex items-center justify-between mb-4">
                                                     <div className="flex items-center space-x-3">
@@ -551,7 +497,7 @@ const ProductDetailsPage = () => {
                                                             <User className="h-5 w-5 text-green-600" />
                                                         </div>
                                                         <div>
-                                                            <div className="font-medium text-gray-900">{review?.user}</div>
+                                                            <div className="font-medium text-gray-900">{review?.reviewer}</div>
                                                             <div className="text-sm text-gray-500">{review?.date}</div>
                                                         </div>
                                                         {review?.verified && (
@@ -566,16 +512,7 @@ const ProductDetailsPage = () => {
                                                         ))}
                                                     </div>
                                                 </div>
-                                                <p className="text-gray-700 mb-4">{review?.comment}</p>
-                                                <div className="flex items-center space-x-4 text-sm text-gray-500">
-                                                    <button className="flex items-center space-x-1 hover:text-green-600 transition-colors">
-                                                        <span>👍 Helpful ({review?.helpful})</span>
-                                                    </button>
-                                                    <button className="flex items-center space-x-1 hover:text-green-600 transition-colors">
-                                                        <MessageCircle className="h-4 w-4" />
-                                                        <span>Reply</span>
-                                                    </button>
-                                                </div>
+                                                <p className="text-gray-700">{review?.review}</p>
                                             </div>
                                         ))}
                                     </div>
