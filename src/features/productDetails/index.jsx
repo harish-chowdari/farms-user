@@ -2,15 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { User, Heart, X, Star, Truck, Shield, Plus, Minus, Share2, MessageCircle, Award, CheckCircle, ShoppingCart, Clock, Zap, Leaf } from 'lucide-react';
 
-import Header from '../../components/layout/Header';
-import NewsLetter from '../../components/layout/NewsLetter';
-import Footer from '../../components/layout/Footer';
-import ReviewComponent from './components/ReviewComponent';
 import PrimaryLoader from '../../components/loaders/PrimaryLoader';
+import NewsLetter from '../../components/layout/NewsLetter';
+import Header from '../../components/layout/Header';
+import Footer from '../../components/layout/Footer';
+import Description from './components/Description';
+// import Reviews from './components/Reviews';
 
 import { addProductToCart, decreaseQuantity, getCartByUserId, increaseQuantity, removeProductFromCart } from '../../services/api';
 import { getProduct, getReviews } from './services/api';
 import { CART_ACTIONS } from '../../config/constants';
+import Farmer from './components/Farmer';
+import Reviews from './components/Reviews';
 
 const ProductDetailsPage = () => {
 
@@ -59,20 +62,6 @@ const ProductDetailsPage = () => {
 
         getProductDetails();
     }, [productId])
-
-
-    useEffect(() => {
-        const fetchReviews = async () => {
-            try {
-                const response = await getReviews(productId);
-                console.log(response,'jhv');
-                setReviews(response);
-            } catch (error) {
-                console.error('API error:', error);
-            }
-        }
-        fetchReviews();
-    }, [productId]);
 
 
     const handleAddToCart = async() => {
@@ -409,7 +398,9 @@ const ProductDetailsPage = () => {
                                 ].map((tab) => (
                                     <button
                                         key={tab.key}
-                                        onClick={() => setActiveTab(tab.key)}
+                                        onClick={() => {
+                                            setActiveTab(tab.key)
+                                        }}
                                         className={`px-6 py-4 font-medium text-sm transition-colors relative ${
                                             activeTab === tab.key
                                             ? 'text-green-600 bg-green-50 border-b-2 border-green-600'
@@ -424,133 +415,15 @@ const ProductDetailsPage = () => {
 
                         <div className="p-8">
                             {activeTab === 'description' && (
-                                <div className="space-y-6">
-                                    <div>
-                                        <p className="text-gray-700 text-lg leading-relaxed mb-6">{product?.description}</p>
-                                    </div>
-                                    <div className="grid md:grid-cols-2 gap-8">
-                                        <div>
-                                            <h4 className="text-lg font-semibold mb-4 text-gray-900">Product Specifications</h4>
-                                            <div className="space-y-3">
-                                                <div className="flex justify-between py-2 border-b border-gray-100">
-                                                    <span className="text-gray-600">Weight</span>
-                                                    <span className="font-medium">{product?.weight} {product?.weightUnit}</span>
-                                                </div>
-                                                <div className="flex justify-between py-2 border-b border-gray-100">
-                                                    <span className="text-gray-600">Category</span>
-                                                    <span className="font-medium">{product?.category}</span>
-                                                </div>
-                                                <div className="flex justify-between py-2 border-b border-gray-100">
-                                                    <span className="text-gray-600">Freshness</span>
-                                                    <span className="font-medium">{product?.freshness}</span>
-                                                </div>
-                                                {product?.origin && (
-                                                    <div className="flex justify-between py-2 border-b border-gray-100">
-                                                        <span className="text-gray-600">Origin</span>
-                                                        <span className="font-medium">{product?.origin}</span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h4 className="text-lg font-semibold mb-4 text-gray-900">Certifications</h4>
-                                            <div className="space-y-3">
-                                                <div className="flex items-center p-3 bg-green-50 rounded-lg">
-                                                    <Award className="h-5 w-5 text-green-600 mr-3" />
-                                                    <span className="text-green-800 font-medium">Organic Certified</span>
-                                                </div>
-                                                <div className="flex items-center p-3 bg-blue-50 rounded-lg">
-                                                    <Shield className="h-5 w-5 text-blue-600 mr-3" />
-                                                    <span className="text-blue-800 font-medium">Quality Assured</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <Description product={product} />
                             )}
 
                             {activeTab === 'reviews' && (
-                                <div>
-                                    <div className="flex items-center justify-between mb-8">
-                                        <div>
-                                            <h4 className="text-lg font-semibold text-gray-900">Customer Reviews</h4>
-                                            <div className="flex items-center mt-2">
-                                                <div className="flex">
-                                                    {[...Array(5)].map((_, i) => (
-                                                        <Star key={i} className={`h-4 w-4 ${i < 4 ? 'text-amber-400 fill-current' : 'text-gray-300'}`} />
-                                                    ))}
-                                                </div>
-                                                <span className="ml-2 text-sm text-gray-600">4.0 out of 5 stars</span>
-                                            </div>
-                                        </div>
-                                        <button className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 font-medium transition-colors">
-                                            Write a Review
-                                        </button>
-                                    </div>
-                                    
-                                    <div className="space-y-6">
-                                        {reviews?.map((review) => (
-                                            <div key={review?.id} className="bg-gray-50 rounded-lg p-6">
-                                                <div className="flex items-center justify-between mb-4">
-                                                    <div className="flex items-center space-x-3">
-                                                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                                                            <User className="h-5 w-5 text-green-600" />
-                                                        </div>
-                                                        <div>
-                                                            <div className="font-medium text-gray-900">{review?.reviewer}</div>
-                                                            <div className="text-sm text-gray-500">{review?.date}</div>
-                                                        </div>
-                                                        {review?.verified && (
-                                                            <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">
-                                                                Verified Purchase
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                    <div className="flex">
-                                                        {[...Array(5)].map((_, i) => (
-                                                            <Star key={i} className={`h-4 w-4 ${i < (review?.rating || 0) ? 'text-amber-400 fill-current' : 'text-gray-300'}`} />
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                                <p className="text-gray-700">{review?.review}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
+                                <Reviews activeTab={activeTab} productId={productId} reviews={reviews} />
                             )}
 
                             {activeTab === 'farmer' && (
-                                <div className="max-w-4xl">
-                                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-8 mb-8">
-                                        <div className="flex items-center space-x-6 mb-6">
-                                            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-4xl">
-                                                {mockFarmer?.image}
-                                            </div>
-                                            <div>
-                                                <h3 className="text-2xl font-bold text-gray-900 mb-2">{mockFarmer?.name}</h3>
-                                                <p className="text-gray-600 text-lg">{mockFarmer?.location}</p>
-                                                <p className="text-green-700 font-medium">{mockFarmer?.experience} farming experience</p>
-                                                <div className="flex items-center mt-2">
-                                                    <Star className="h-5 w-5 text-amber-400 fill-current" />
-                                                    <span className="ml-1 text-lg font-semibold">{mockFarmer?.rating}</span>
-                                                    <span className="ml-1 text-gray-600">Farmer Rating</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="prose prose-lg max-w-none">
-                                        <p className="text-gray-700 mb-6 leading-relaxed">
-                                            {mockFarmer?.name} has been growing organic vegetables for over {mockFarmer?.experience}. 
-                                            Located in the beautiful state of {mockFarmer?.location}, his farm uses traditional 
-                                            farming methods combined with modern organic practices to produce the highest quality vegetables.
-                                        </p>
-                                        <p className="text-gray-700 leading-relaxed">
-                                            All products from this farm are certified organic and grown without the use of chemical 
-                                            pesticides or synthetic fertilizers. The farm follows sustainable farming practices that 
-                                            are good for both the environment and your health.
-                                        </p>
-                                    </div>
-                                </div>
+                                <Farmer />
                             )}
                         </div>
                     </div>
