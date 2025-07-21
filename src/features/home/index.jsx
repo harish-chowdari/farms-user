@@ -155,7 +155,7 @@ const SunotalHomePage = () => {
                     <div className="grid items-center justify-center grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
                         {categories?.map((category, index) => (
                         <div key={index} className={`${category.color} p-6 rounded-lg text-center cursor-pointer transition-all hover:scale-105`}>
-                            <img src={category.img} alt={category.name} className="md:w-44 md:h-32 w-32 h-28 mx-auto mb-4" />
+                            <img src={category.img} alt={category.name} className="md:w-44 md:h-32 w-32 h-[90px] mx-auto mb-4" />
                             <h3 className="font-semibold text-lg mb-1">{category.name}</h3>
                             {/* <p className="text-sm text-gray-600">{category.count}</p> */}
                         </div>
